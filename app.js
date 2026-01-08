@@ -77,9 +77,16 @@ io.on("connection", (socket) => {
 
 });
 
-server.listen(PORT, () => {
-    console.log('start');
-});
+
+if (process.env.MODE == "PROD") {
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log('server start at http://0.0.0.0:', PORT);
+    });
+} else {
+    server.listen(PORT, () => {
+        console.log('server start at http://127.0.0.1:', PORT);
+    });
+}
 
 
 
