@@ -1125,7 +1125,7 @@
                         body: JSON.stringify({ postid: Number(postId) })
                     })
                     let result = await res.json()
-
+                    console.log(result);
                     if (result.success) {
                         let iCon = like.querySelector("button i")
                         iCon.classList.toggle("fa-solid")
