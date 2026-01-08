@@ -272,7 +272,7 @@
         }
 
         window.addEventListener('load', async () => {
-             socket = io({
+            socket = io({
                 auth: { userId: current.value }
             });
 
@@ -315,6 +315,11 @@
                 user.isActive = true;
                 usrList()
             });
+
+            socket.on("online:list", ({ ids }) => {
+                console.log(ids)
+                usrList()
+            })
 
         });
 
@@ -397,7 +402,6 @@
             let result = await response.json();
             if (result.success) {
                 box.innerHTML = "";
-                console.log(result);
                 result.data.forEach(m => {
                     let isMe = (id == m.receiverId);
 

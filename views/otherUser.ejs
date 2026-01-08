@@ -724,12 +724,13 @@
         const buttonBar = document.querySelectorAll(".buttonBar")
         const message = document.querySelector(".message")
 
-
-        message.addEventListener('click', () => {
-            let toMessId = message.querySelector('input').value
-            window.location.href =
-                `/message/message?toMessId=${encodeURIComponent(toMessId)}`;
-        })
+        if (message) {
+            message.addEventListener('click', () => {
+                let toMessId = message.querySelector('input').value
+                window.location.href =
+                    `/message/message?toMessId=${encodeURIComponent(toMessId)}`;
+            })
+        }
 
         function loaddeed() {
             load.classList.remove('invisible')
@@ -820,7 +821,7 @@
         </div>`
                         });
                         commestses()
-                        again()
+                        likesss()
                     }
                 }
             })
@@ -1002,98 +1003,82 @@
             })
         })
 
-        function updat() {
+        function updateCounter(selector, delta) {
+            const el = document.querySelector(selector);
+            if (!el) return;
 
-            const load = document.querySelector('.load');
-            function updateCounter(selector, delta) {
-                const el = document.querySelector(selector);
-                if (!el) return;
-
-                const count = Number(el.textContent.trim());
-                el.textContent = Math.max(0, count + delta);
-            }
-            function addUserToList(user) {
-                const addd = document.querySelector('.addd');
-                if (!addd) return;
-
-                const div = document.createElement('div');
-                div.className =
-                    'flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]';
-
-                div.innerHTML = `
-        <div class="flex flex-row items-center w-[80%] gap-2">
-            <img src="${user.image_src}"
-                class="size-12 rounded-full border border-gray-300"
-                style="object-fit: cover;" />
-            <div class="flex flex-col">
-                <span class="font-semibold">${user.Username}</span>
-                <span class="text-sm text-gray-500">${user.First_name}</span>
-            </div>
-        </div>
-        <button class="unfollow px-3 py-1 rounded-lg text-xs bg-zinc-200 cursor-pointer">
-            unfollow
-            <input type="hidden" value="${user.Id}">
-        </button>
-    `;
-                addd.prepend(div);
-            }
-            function updat() {
-                document.addEventListener('click', async (e) => {
-                    const btn = e.target.closest('.follow, .unfollow');
-                    if (!btn) return;
-
-                    const requestId = Number(btn.querySelector('input')?.value);
-                    if (!requestId) return;
-
-                    const isFollow = btn.textContent.trim() === 'Follow';
-
-                    try {
-                        if (isFollow) {
-                            const res = await fetch('/follow/request', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ requestId })
-                            });
-
-                            const result = await res.json();
-                            if (!result.success) return;
-
-                            updateCounter('.followers-count', +1);
-
-                            btn.textContent = 'unfollow';
-                            btn.classList.remove('follow');
-                            btn.classList.add('unfollow');
-
-                            if (result.data) addUserToList(result.data);
-
-                        } else {
-                            const res = await fetch('/follow/unfollow', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ requestId })
-                            });
-
-                            const result = await res.json();
-                            if (!result.success) return;
-
-                            updateCounter('.followers-count', -1);
-
-                            btn.textContent = 'Follow';
-                            btn.classList.remove('unfollow');
-                            btn.classList.add('follow');
-                        }
-                    } catch (err) {
-                        console.error(err);
-                    } finally {
-                        window.location.reload()
-                    }
-                });
-            }
-            return updat();
+            const count = Number(el.textContent.trim());
+            el.textContent = Math.max(0, count + delta);
         }
-        updat()
 
-        function again() {
+        function addUserToList(user) {
+            const addd = document.querySelector('.addd');
+            if (!addd) return;
+
+            const div = document.createElement('div');
+            div.classList.add('flex', 'flex-row', 'px-2', 'p-2', 'items-center', 'rounded-lg', 'gap-5', 'w-[100%]')
+
+            div.innerHTML = `
+    <div class="flex flex-row items-center w-[80%] gap-2">
+      <img src="${user.image_src}"
+        class="size-12 rounded-full border border-gray-300"
+        style="object-fit: cover;" />
+      <div class="flex flex-col">
+        <span class="font-semibold">${user.Username}</span>
+        <span class="text-sm text-gray-500">${user.First_name}</span>
+      </div>
+    </div>
+    <button class="unfollow px-3 py-1 rounded-lg text-xs bg-zinc-200 cursor-pointer">
+      unfollow
+      <input type="hidden" value="${user.Id}">  
+    </button>
+  `;
+
+            addd.prepend(div);
+        }
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.follow, .unfollow');
+            if (!btn) return;
+
+            const requestId = Number(btn.querySelector('input')?.value);
+            if (!requestId) return;
+
+            const isFollow = btn.classList.contains('follow');
+
+            try {
+                const url = isFollow
+                    ? '/follow/request'
+                    : '/follow/unfollow';
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requestId })
+                });
+
+                const result = await res.json();
+                if (!result.success) return;
+                if (isFollow) {
+                    updateCounter('.followers-count', +1);
+                    btn.innerHTML = `unfollow <input type="hidden" value="${requestId}">`;
+                    btn.classList.remove('follow');
+                    btn.classList.add('unfollow');
+                    message.style.display = 'block'
+
+                } else {
+                    updateCounter('.followers-count', -1);
+                    btn.innerHTML = `Follow <input type="hidden" value="${requestId}">`;
+                    btn.classList.remove('unfollow');
+                    btn.classList.add('follow');
+                    message.style.display = 'none'
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        function likesss() {
             const likes = document.querySelectorAll('.like')
 
             likes.forEach(like => {
@@ -1113,7 +1098,7 @@
                     })
                     let result = await res.json()
 
-                    if (result.sucess) {
+                    if (result.success) {
                         let iCon = like.querySelector("button i")
                         iCon.classList.toggle("fa-solid")
                         iCon.classList.toggle("fa-regular")
@@ -1125,7 +1110,7 @@
                 });
             })
         }
-        again()
+        likesss()
 
         function stop() {
             setTimeout(() => {

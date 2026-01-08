@@ -18,13 +18,13 @@ export const postData = async (req, res) => {
     console.log("Audio:", audio);
 
 
-    // await db.insert(posts).values({
-    //     userId: Id,
-    //     postName: postname,
-    //     desc: discription,
-    //     image_url: imagePath,
-    //     isPublic,
-    // });
+    await db.insert(posts).values({
+        userId: Id,
+        postName: postname,
+        desc: discription,
+        image_url: imagePath,
+        isPublic,
+    });
 
     res.json({ success: true, redirect: "/" });
 };

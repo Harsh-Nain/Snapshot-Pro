@@ -59,6 +59,7 @@ io.on("connection", (socket) => {
         userId,
     });
 
+
     socket.on("event", (data) => {
         console.log(data, ids[data.to]);
 
@@ -75,6 +76,12 @@ io.on("connection", (socket) => {
         }
     });
 
+    const onlineUsers = { ...ids };
+    delete onlineUsers[userId];
+    socket.broadcast.emit("online:list", {
+        ids: onlineUsers,
+    });
+
 });
 
 
@@ -87,6 +94,8 @@ if (process.env.MODE == "PROD") {
         console.log('server start at http://127.0.0.1:', PORT);
     });
 }
+
+
 
 
 
