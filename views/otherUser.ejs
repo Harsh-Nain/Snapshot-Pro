@@ -1,0 +1,1140 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Snapshot Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://kit.fontawesome.com/b3b89cf277.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: cursive;
+    }
+
+    .ww {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-left: 11px;
+    }
+
+    .ddd {
+        position: relative;
+    }
+
+    .cross {
+        position: absolute;
+        right: 3%;
+        top: 3%;
+        color: white;
+        cursor: pointer;
+    }
+
+    .cmnt {
+        width: 67%;
+        height: 80vh;
+        background: white;
+    }
+
+    .commbg {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.646);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        bottom: 0;
+    }
+
+    .bbc {
+        padding: 5px;
+        border-radius: 16px 2px 7px;
+    }
+
+    .bbe {
+        padding: 5px;
+        border-radius: 7px 4px 7px 2px;
+    }
+
+    .active {
+        font-weight: bold;
+    }
+
+    .black {
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999999;
+        background-color: rgba(0, 0, 0, 0.79);
+    }
+
+    .cut {
+        position: absolute;
+        right: 3%;
+        top: 4%;
+        color: white;
+    }
+
+    .hoP {
+        position: fixed;
+        left: 5%;
+        top: 0;
+        width: 0;
+        overflow: hidden;
+        transition: all 0.6s linear;
+        background: white;
+    }
+
+    @media screen and (max-width:500px) {
+
+        .pos {
+            width: 370px;
+        }
+
+        .cross {
+            position: absolute;
+            right: 0%;
+            top: -6%;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+        }
+
+        .ww {
+            width: 100%;
+        }
+
+        .cut {
+            position: absolute;
+            right: 1%;
+            top: 1%;
+            color: black;
+        }
+
+        .borde {
+            width: 380px;
+        }
+
+        .main {
+            width: 380px;
+            gap: 90px;
+        }
+
+        .nav2 {
+            padding: 5px;
+        }
+
+        nav {
+            padding: 10px 0;
+        }
+
+        .cmnt {
+            width: 100%;
+            border-radius: 10px;
+            height: 50vh;
+            background: white;
+        }
+
+        .comm {
+            width: 100%;
+        }
+
+        .commbg {
+            background-color: transparent;
+            height: 50vh;
+        }
+
+        .hoP {
+            width: 100%;
+            left: 0;
+        }
+
+        .foling,
+        .folwr {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        .ws {
+            width: 50%;
+        }
+
+    }
+
+    @media screen and (min-width:500px) {
+
+        .hhh {
+            height: 90vh;
+        }
+
+        .hoP {
+            width: 30%;
+        }
+
+    }
+
+    @media screen and (max-width:1000px) {
+
+        .nav2 {
+            width: max-content;
+        }
+
+        .hoP {
+            left: 8%;
+            width: auto;
+        }
+    }
+
+    .Suggestion {
+        position: fixed;
+        right: 0;
+        top: 0;
+    }
+</style>
+
+<body class="overflow-hidden flex justify-center items-center">
+
+    <div class="load invisible">
+        <div class="loaer">
+            <svg viewBox="0 0 80 80">
+                <circle r="32" cy="40" cx="40" id="test"></circle>
+            </svg>
+        </div>
+
+        <div class="loaer triangle">
+            <svg viewBox="0 0 86 80">
+                <polygon points="43 8 79 72 7 72"></polygon>
+            </svg>
+        </div>
+
+        <div class="loaer">
+            <svg viewBox="0 0 80 80">
+                <rect height="64" width="64" y="8" x="8"></rect>
+            </svg>
+        </div>
+
+    </div>
+
+    <div class="black w-[100%] h-[100vh] invisible">
+        <p class="cut cursor-pointer"><i class="fa-solid fa-xmark fa-2xl"></i></p>
+
+        <div
+            class="foling hidden w-[45%] h-[67vh] div3 flex flex-col gap-6 overflow-hidden shadow-xl bg-white rounded-4xl">
+            <p class="w-[100%] py-1 pt-3 text-center border-b-1 border-solid border-gray-400">followers</p>
+            <div class="flex flex-col overflow-x-hidden overflow-y-scroll h-[86%]">
+                <% if (following) {%>
+                    <% following.forEach(f=> {%>
+                        <div class="flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]">
+                            <div class=" flex flex-row items-center w-[80%] gap-2">
+                                <p class="size-12"><img src="<%= f.image_src %>"
+                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                        style="width: 100%; height: 100%; object-fit: cover;" alt=""></p>
+                                <div class="flex items-center ws flex-col borde sm:items-center">
+                                    <button class="cursor-pointer userOther">
+                                        <input type="hidden" name="username" value="<%= f.Username %>" id="">
+                                        <input type="hidden" name="Id" value="<%= f.Id %>" id="">
+                                        <%= f.Username %>
+                                            <p class="text-zinc-600 text-sm text-left">
+                                                <%=f.First_name %>
+                                            </p>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex flex-row gap-2 bt3">
+                                <button
+                                    class="p-1 px-5 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white follow">Follow
+                                    <input type="hidden" value="<%= f.Id %>">
+                                </button>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } %>
+                                <% if (suggsionId) {%>
+                                    <p class="p-1 border-b-1 py-2 border-sky-400 color text-sky-500">Suggestion</p>
+                                    <% suggsionId.forEach(f=> {%>
+
+                                        <div class="flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]">
+                                            <div class=" flex flex-row items-center w-[80%] gap-2">
+                                                <p class="size-12"><img src="<%= f.image_src %>"
+                                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                                </p>
+                                                <div class="flex items-center ws flex-col borde sm:items-center">
+                                                    <button class="cursor-pointer userOther">
+                                                        <input type="hidden" name="username" value="<%= f.Username %>"
+                                                            id="">
+                                                        <input type="hidden" name="Id" value="<%= f.Id %>" id="">
+                                                        <%= f.Username %>
+                                                            <p class="text-zinc-600 text-sm text-left">
+                                                                <%=f.First_name %>
+                                                            </p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-row gap-2 bt3">
+                                                <button
+                                                    class="p-1 px-5 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white remove">remove
+                                                    <input type="hidden" value="<%= f.Id %>">
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } %>
+            </div>
+        </div>
+
+        <div
+            class="folwr hidden w-[45%] h-[67vh] div3 flex flex-col gap-6 overflow-hidden shadow-xl bg-white rounded-4xl">
+            <p class="w-[100%] py-1 pt-3 text-center border-b-1 border-solid border-gray-400">following</p>
+            <div class="flex flex-col overflow-x-hidden overflow-y-scroll h-[86%] addd">
+                <% if (follower) {%>
+                    <% follower.forEach(f=> {%>
+                        <div class="flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]">
+                            <div class="flex flex-row items-center w-[80%] gap-2">
+                                <p class="size-12"><img src="<%= f.image_src %>"
+                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                        style="width: 100%; height: 100%; object-fit: cover;" alt=""></p>
+                                <div class="flex items-center ws flex-col borde sm:items-center">
+                                    <button class="cursor-pointer userOther">
+                                        <input type="hidden" name="username" value="<%= f.Username %>" id="">
+                                        <input type="hidden" name="Id" value="<%= f.Id %>" id="">
+                                        <%= f.Username %>
+                                            <p class="text-zinc-600 text-sm text-left">
+                                                <%=f.First_name %>
+                                            </p>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex flex-row gap-2 bt3">
+
+                                <button
+                                    class="p-1 px-5 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white follow">Follow
+                                    <input type="hidden" value="<%= f.Id %>">
+                                </button>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } %>
+                                <% if (suggsionId) {%>
+                                    <p class="p-1 py-2 border-b-1 border-sky-400 color text-sky-500">Suggestion</p>
+                                    <% suggsionId.forEach(f=> {%>
+
+                                        <div class="flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]">
+                                            <div class=" flex flex-row items-center w-[80%] gap-2">
+                                                <p class="size-12"><img src="<%= f.image_src %>"
+                                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                                </p>
+                                                <div class="flex items-center ws flex-col borde sm:items-center">
+                                                    <button class="cursor-pointer userOther">
+                                                        <input type="hidden" name="username" value="<%= f.Username %>"
+                                                            id="">
+                                                        <input type="hidden" name="Id" value="<%= f.Id %>" id="">
+                                                        <%= f.Username %>
+                                                            <p class="text-zinc-600 text-sm text-left">
+                                                                <%=f.First_name %>
+                                                            </p>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-row gap-2 bt3">
+                                                <button
+                                                    class="p-1 px-5 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white follow">Follow
+                                                    <input type="hidden" value="<%= f.Id %>">
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col min-h-screen w-full">
+
+        <div class="flex flex-col md:flex-row w-full">
+            <nav
+                class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-zinc-300 flex justify-around items-center py-2 md:hidden buttonBar">
+
+                <a href="/" class="flex flex-col items-center text-xs">
+                    <svg aria-label="Home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                        <path d="M3 9.5L12 3l9 6.5"></path>
+                        <path d="M5 10.5V21a1 1 0 0 0 1 1h4v-6a2 2 0 0 1 4 0v6h4a1 1 0 0 0 1-1V10.5"></path>
+                    </svg>
+                </a>
+
+                <a href="/profile" class="flex flex-col items-center text-xs">
+                    <img src="<%= currentUser.image_src %>" alt="" class=" size-7 rounded-[50%]"
+                        style="object-fit: cover;">
+                </a>
+
+                <a href="/post/post" class="flex flex-col items-center text-xs">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="w-6 h-6">
+                        <rect x="3" y="3" width="18" height="18" rx="3" />
+                        <path d="M12 8v8" />
+                        <path d="M8 12h8" />
+                    </svg>
+                </a>
+
+                <a href="/message/message" class="flex flex-col items-center text-xs">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="w-6 h-6">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </a>
+
+                <button id="notif"
+                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
+                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
+                </button>
+
+            </nav>
+
+            <aside class="hidden md:flex md:w-[260px] flex-col gap-4 nav2 py-4 px-3 bg-white buttonBar">
+
+                <div class="flex items-center gap-2 pt-2 px-2">
+                    <span class="text-xl font-semibold overflow-hidden">Snapshot</span>
+                </div>
+
+                <a href="/" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
+                    <svg aria-label="Home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                        <path d="M3 9.5L12 3l9 6.5"></path>
+                        <path d="M5 10.5V21a1 1 0 0 0 1 1h4v-6a2 2 0 0 1 4 0v6h4a1 1 0 0 0 1-1V10.5"></path>
+                    </svg>
+                    <span class="overflow-hidden">Home</span>
+                </a>
+
+                <a href="/profile" class="p-2 hover:bg-zinc-100 rounded-lg flex gap-3 items-center">
+                    <img src="<%= currentUser.image_src %>" alt="" class=" size-7 rounded-[50%]"
+                        style="object-fit: cover;">
+                    <span class="overflow-hidden text-bold">Profile</span>
+                </a>
+
+                <a href="/post/post" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="w-6 h-6">
+                        <rect x="3" y="3" width="18" height="18" rx="3" />
+                        <path d="M12 8v8" />
+                        <path d="M8 12h8" />
+                    </svg>
+                    <span class="overflow-hidden">Post</span>
+                </a>
+
+                <a href="/message/message" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="w-6 h-6">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span class="overflow-hidden">Messages</span>
+                </a>
+
+                <button id="notif"
+                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
+                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
+                    <span class="overflow-hidden">Notification</span>
+                </button>
+
+                <a href="/logout" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center mt-auto">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="w-6 h-6">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <path d="M16 17l5-5-5-5" />
+                        <path d="M21 12H9" />
+                    </svg>
+                    <span class="overflow-hidden">Logout</span>
+                </a>
+            </aside>
+
+            <main
+                class="flex-1 flex justify-center px-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-[98vh] sm:px-6 py-4">
+
+                <div class="w-full max-w-5xl bg-white rounded-xl p-4 flex flex-col gap-6 items-center">
+
+                    <div class="flex flex-col gap-3 pb-4 w-full items-center">
+                        <div class="flex flex-col sm:flex-row gap-10 my-5 items-center sm:items-start">
+
+                            <div class="flex flex-col items-center sm: gap-2 size-30">
+                                <img class="w-full h-full rounded-full object-cover" src="<%= data.image_src %>" alt="">
+                            </div>
+
+                            <div class="flex-1 flex flex-col gap-2 items-center sm:items-start">
+                                <p class="font-semibold">
+                                    <%= data.Username %>
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    <%= data.First_name %>
+                                </p>
+
+                                <div class="flex flex-wrap gap-4 text-sm text-gray-700">
+                                    <% if (userPost) { %>
+                                        <span class="flex gap-1">
+                                            <b>
+                                                <%= userPost.length %>
+                                            </b> posts
+                                        </span>
+                                        <% } %>
+
+                                            <% if (following) { %>
+                                                <span class="flex gap-1 foll cursor-pointer foll">
+                                                    <b class="ffl followers-count">
+                                                        <%= following.length %>
+                                                    </b>
+                                                    <p>followers</p>
+                                                </span>
+                                                <% } %>
+
+                                                    <% if (follower) { %>
+                                                        <span class="flex gap-1 foll florss cursor-pointer foll">
+                                                            <b class="following-count">
+                                                                <%= follower.length %>
+                                                            </b>
+                                                            <p>following</p>
+                                                        </span>
+                                                        <% } %>
+                                </div>
+
+                                <% if (!folingBfor) { %>
+                                    <button class="follow px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                        Follow
+                                        <input type="hidden" value="<%= data.Id %>">
+                                    </button>
+                                    <% } else { %>
+                                        <div class="flex flex-row items-center gap-4">
+                                            <button
+                                                class="unfollow px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                                Unfollow
+                                                <input type="hidden" value="<%= data.Id %>">
+                                            </button>
+                                            <a
+                                                class="message px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                                <input type="hidden" value="<%= data.Id %>">
+                                                Message
+                                            </a>
+                                        </div>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-[80%] border-t border-zinc-400 pt-3">
+                        <% userPost.forEach(p=> { %>
+                            <div class="post cursor-pointer" style="aspect-ratio: 1/1.1;">
+                                <input type="hidden" name="postid" value="<%= p.Id %>">
+                                <img src="<%= p.image_url %>" class="w-full h-full object-cover" alt="">
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div
+        class="hoP flex flex-col gap-4 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
+        <p class="w-[100%] text-2xl text-bold">Notifications</p>
+        <div
+            class="overflow-y-scroll addnot w-[100%] overflow-x-hidden h-[100%] scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <% if (requestUser.length> 0) {%>
+                <% requestUser.forEach(request=> {%>
+                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                        <img src="<%= request.image_src || '' %>" class="size-12 rounded-[50%] object-cover" alt="">
+                        <span class="flex flex-col text-sm w-[50%]">
+                            <p>
+                                <%=request.Username %>
+                            </p>
+                            <p class="text-zinc-600">
+                                <%=request.First_name %>
+                            </p>
+                        </span>
+                        <div class="flex flex-row gap-2 bt3">
+                            <button
+                                class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
+                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                            <button
+                                class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
+                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                        </div>
+                    </div>
+                    <% }); %>
+                        <% } else{%>
+                            <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
+                                <div class="_aajr"><svg aria-label="Activity On Your Posts"
+                                        class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="62" role="img"
+                                        viewBox="0 0 96 96" width="62">
+                                        <title>Activity On Your Posts</title>
+                                        <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor"
+                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                        </circle>
+                                        <path
+                                            d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
+                                            fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"></path>
+                                    </svg></div>
+                                <h2 class="_aajt"><span
+                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                        dir="auto"
+                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
+                                        On Your Posts</span></h2>
+                                <h3 class="_aaju"><span
+                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                        dir="auto"
+                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
+                                        someone likes or comments on one of your posts, you'll see it here.</span>
+                                </h3>
+                            </div>
+                            <% } %>
+                                <p class="py-2 w-full">Suggsion for you</p>
+                                <div class="flex flex-col gap-3">
+                                    <% if (suggsionId) {%>
+                                        <% suggsionId.forEach(request=> {%>
+                                            <div
+                                                class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                                                <button
+                                                    class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
+                                                    <p class="size-10"><img src="<%=request.image_src%>"
+                                                            class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                            style="width: 100%; height: 100%; object-fit: cover;"
+                                                            alt="">
+                                                    </p>
+                                                    <input type="hidden" name="username" value="<%= request.Username %>"
+                                                        id="">
+                                                    <input type="hidden" name="Id" value="<%= request.Id %>" id="">
+                                                    <span class="flex flex-col gap-1">
+                                                        <p class="text-sm">
+                                                            <%= request.Username %>
+                                                        </p>
+                                                        <p class="text-zinc-600 text-xs">
+                                                            <%=request.First_name %>
+                                                        </p>
+                                                    </span>
+                                                </button>
+
+                                                <div class="flex flex-row gap-2 ">
+                                                    <button
+                                                        class="p-1 px-2 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
+                                                        <input type="hidden" value="<%= request.Id %>">
+                                                        <input type="hidden" value="<%= request.Username %>">
+                                                        <input type="hidden" value="<%= request.First_name %>">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                                <% } %>
+                                </div>
+
+        </div>
+    </div>
+
+    <input type="hidden" value="<%= data.Id %>" id="data">
+
+    <div class="fixed inset-0 commbg bg-black/40 flex invisible justify-center items-center z-50">
+        <p class="cross"><i class="fa-solid fa-xmark fa-2xl"></i></p>
+        <div class="loddd hidden w-[60px]">
+            <svg class="loader gry" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+                <circle class="active" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
+                </circle>
+                <circle class="track" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
+                </circle>
+            </svg>
+        </div>
+        <div class="w-[75%] mx-auto h-[90%] bg-white loadedd hidden rounded-md flex">
+
+            <div class="w-1/2 bg-black flex items-center overflow-hidden justify-center">
+                <img src="https://i.pravatar.cc/600" id="postImage" alt="Post Not Found..."
+                    class="w-full h-full object-contain">
+            </div>
+
+            <div class="w-1/2 flex flex-col">
+
+                <div class="flex items-center justify-between px-4 py-3 border-b">
+                    <div class="flex items-center gap-3">
+                        <img src="https://i.pravatar.cc/50" id="postUserImage" class="w-8 h-8 rounded-full">
+
+                        <p class="font-semibold flex items-center gap-1" id="postUsername">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto px-4 py-3 text-sm leading-6 commentsDiv"></div>
+                <div class="likesection p-[10px]"></div>
+
+                <div class="px-4 py-3 flex border-1 border-solid border-zinc-300 items-center gap-2">
+                    <input type="text" class="flex-1 outline-none text-sm" id="newComment"
+                        placeholder="Add a comment...">
+                    <input type="hidden" name="postId" value="" class="postIdc">
+                    <input type="hidden" name="postId" value="" id="currentusr">
+                    <button class="text-blue-500 font-semibold hover:underline text-sm cursor-pointer"
+                        id="creatComment">
+                        Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="" value="<%= data %>" class="data">
+
+    <script>
+        const removes = document.querySelectorAll('.remove')
+        const cut = document.querySelector('.cut')
+        const black = document.querySelector('.black')
+        const folwr = document.querySelector('.folwr')
+        const foling = document.querySelector('.foling')
+        const foll = document.querySelectorAll('.foll')
+        const ffl = document.querySelectorAll('.ffl')
+        const userOther = document.querySelectorAll(".userOther")
+        const notf = document.querySelector(".hoP")
+        const notif = document.querySelectorAll("#notif")
+        const florss = document.querySelectorAll(".florss")
+        const commbg = document.querySelector(".commbg")
+        const comments = document.querySelectorAll('.comment')
+        const commentsDiv = document.querySelector(".commentsDiv")
+        const newComment = document.getElementById("newComment")
+        const creatComment = document.getElementById("creatComment")
+        const cross = document.querySelector(".cross")
+        const load = document.querySelector(".load")
+        const a = document.querySelectorAll("a")
+        const a2 = document.querySelectorAll(".a")
+        const data = document.querySelector(".data")
+        const posts = document.querySelectorAll(".post")
+
+        const username = document.querySelector(".username");
+        const email = document.querySelector(".email");
+        const fullname = document.querySelector(".fullname");
+        const bio = document.querySelector(".bio");
+        const likesection = document.querySelector(".likesection");
+        const postImage = document.getElementById("postImage");
+        const postUserImage = document.getElementById("postUserImage");
+        const postUsername = document.getElementById("postUsername");
+        const postIdc = document.querySelectorAll(".postIdc");
+        const currentusr = document.getElementById("currentusr");
+        const loadedd = document.querySelector(".loadedd");
+        const loddd = document.querySelector(".loddd")
+        const buttonBar = document.querySelectorAll(".buttonBar")
+        const message = document.querySelector(".message")
+
+
+        message.addEventListener('click', () => {
+            let toMessId = message.querySelector('input').value
+            window.location.href =
+                `/message/message?toMessId=${encodeURIComponent(toMessId)}`;
+        })
+
+        function loaddeed() {
+            load.classList.remove('invisible')
+        }
+
+        cross.addEventListener('click', () => {
+            commbg.classList.add('invisible')
+            loddd.classList.add('hidden');
+            loadedd.classList.add('hidden');
+        })
+
+        function ago(t) {
+            const time = t;
+            let result;
+
+            const diffMs = Date.now() - new Date(time);
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHr = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHr / 24);
+            if (diffSec < 60) result = `${diffSec} s now`; else if (diffMin < 60) result = `${diffMin} min ago`; else if (diffHr <
+                24) result = `${diffHr} hours ago`; else result = `${diffDay} day ago`; return result;
+        }
+
+        posts.forEach(post => {
+            post.addEventListener('click', async () => {
+                let postId = post.querySelector('input').value
+                commbg.classList.remove('invisible');
+                loddd.classList.remove('hidden');
+
+                let res = await fetch(`/post/onePost?postId=${postId}`)
+                let com = await fetch(`/post/postcomment?postId=${postId}`)
+                let postData = await res.json()
+                let result = await com.json()
+                if (postData) {
+                    postImage.src = postData.image_url
+                    postUserImage.src = postData.image_src
+                    currentusr.value = postData.username
+                    postUsername.innerHTML = `${postData.username} <span class="text-blue-500">✔</span>`
+
+                    postIdc.forEach(element => {
+                        element.value = postData.Id
+                    });
+
+                    if (result.success) {
+                        loddd.classList.add('hidden');
+                        loadedd.classList.remove('hidden');
+                        let comments = result.comments;
+                        commentsDiv.innerHTML = ''
+                        likesection.innerHTML = `
+        <div class="text-left flex flex-row gap-2 w-[100%] ">
+            <div class="flex flex-col items-justify-between like">
+                <div class="loadH hidden">
+                    <input type="hidden" name="postid" value="${postData.Id}">
+                    <svg class="loader" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="active" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192"
+                            r="176"></circle>
+                        <circle class="track" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192"
+                            r="176"></circle>
+                    </svg>
+                </div>
+                <button class="text-left">${postData.isLike
+                                ? `<i class="fa-solid fa-heart fa-xl cursor-pointer" style="color:#ff0202"></i>`
+                                : `<i class="fa-regular fa-heart fa-xl cursor-pointer" style="color:#ff0200"></i>`
+                            }</button>
+                <span class="font-light text-md">
+                    ${postData.Likes} Likes
+                </span>
+                <span class="text-xs text-zinc-500">
+                    ${ago(postData.created_at)}
+                </span>
+            </div>
+        </div>`
+
+                        comments.forEach(comment => {
+                            commentsDiv.innerHTML += `
+        <div class="w-[90%] flex flex-row gap-2">
+            <p><i class="fa-solid fa-circle-user fa-lg" style="color: #000000;"></i></p>
+            <div class="flex flex-col">
+                <span class="flex items-center flex-row gap-5">
+                    <p class="font-[500]">${comment.username}</p>
+                    <p class="w-[60%] comm rounded-lg text-light leading-relaxed break-words line-clamp-[3.4] ">
+                        ${comment.content}
+                    </p>
+                </span>
+                <p class="text-zinc-400 text-[13px]" style="font-family: sans-serif;">${ago(comment.created_at)}</p>
+            </div>
+        </div>`
+                        });
+                        commestses()
+                        again()
+                    }
+                }
+            })
+        });
+
+        a2.forEach(e => {
+            e.addEventListener('click', () => {
+                load.classList.remove('invisible')
+                stop()
+            })
+        });
+
+        comments.forEach(comment => {
+            comment.addEventListener('click', async () => {
+
+                let postId = comment.querySelector("input[type=hidden]").value
+                let div = comment.querySelector("div")
+                let p = comment.querySelector("p")
+                div.classList.remove('hidden')
+                p.classList.add('hidden')
+                postIdc.value = postId
+
+                let res = await fetch('/post/postcomment', {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({ postId })
+                })
+
+                let result = await res.json()
+
+                if (result.success) {
+                    let comments = result.comments;
+                    commentsDiv.innerHTML = ''
+                    comments.forEach(comment => {
+                        commentsDiv.innerHTML += `
+        <div class="w-[90%] flex flex-row gap-2">
+            <p><i class="fa-solid fa-circle-user fa-lg" style="color: #000000;"></i></p>
+            <div class="flex flex-col">
+                <span class="flex flex-row gap-5">
+                    <p>${comment.username}</p>
+                    <p class="text-zinc-600 text-sm" style="font-family: sans-serif;">${comment.ctreated_at}</p>
+                </span>
+                <p
+                    class="w-full comm p-3 text-sm text-gray-600 bg-zinc-100 rounded-lg leading-relaxed break-words line-clamp-[3.4] ">
+                    ${comment.content}
+                </p>
+            </div>
+        </div>`
+                    });
+                    commbg.style.visibility = 'visible';
+                    div.classList.add('hidden')
+                    p.classList.remove('hidden')
+                }
+            })
+        });
+
+        function commestses() {
+
+            creatComment.addEventListener('click', async () => {
+                let Comment = newComment.value.trim()
+                let postId = postIdc[0].value.trim()
+
+                const div = document.createElement('div');
+                div.classList.add("w-[90%]", "flex", "gap-2");
+
+                div.innerHTML = ` <div class="w-[90%] flex flex-row gap-2">
+            <p><i class="fa-solid fa-circle-user fa-lg" style="color: #000000;"></i></p>
+            <div class="flex flex-col">
+                <span class="flex items-center flex-row gap-5">
+                    <p class="font-[500]">${currentusr.value}</p>
+                    <p class="w-[60%] comm rounded-lg text-light leading-relaxed break-words line-clamp-[3.4] ">
+                        ${Comment}
+                    </p>
+                </span>
+                <p class="text-zinc-400 text-[13px]" style="font-family: sans-serif;">Just Now</p>
+            </div>
+        </div>`;
+                commentsDiv.prepend(div);
+                let res
+                if (Comment != '') {
+                    res = await fetch('/post/addcomment', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({ Comment, postId })
+                    })
+                }
+                let result = await res.json()
+
+                if (result.success) {
+                    newComment.value = '';
+                }
+            })
+        }
+
+        notif.forEach(nof => {
+            nof.addEventListener('click', () => {
+
+                let i = nof.querySelector('i')
+                let span
+                buttonBar.forEach(b => {
+                    span = b.querySelectorAll('span')
+                });
+                if (notf.classList.covers('hidden')) {
+                    nof.classList.add('active')
+                    notf.classList.remove('hidden')
+                    span.forEach(element => {
+                        element.classList.add('w-0')
+                    });
+                    i.classList.replace('fa-regular', 'fa-solid')
+                } else {
+                    span.forEach(element => {
+                        element.classList.remove('w-0')
+                    });
+                    i.classList.replace('fa-solid', 'fa-regular')
+                    nof.classList.remove('active')
+                    notf.classList.add('hidden')
+                }
+            })
+        });
+
+        userOther.forEach(user => {
+            user.addEventListener('click', () => {
+                const inputs = user.querySelectorAll('input');
+                const username = inputs[0].value;
+                const userId = Number(inputs[1].value);
+                load.classList.remove('invisible')
+                stop()
+
+                window.location.href =
+                    `/auth/userProfile?username=${encodeURIComponent(username)}&Id=${encodeURIComponent(userId)}`;
+            });
+        });
+
+        cut.addEventListener('click', () => {
+            black.classList.add("invisible")
+            foling.classList.add('hidden')
+            folwr.classList.add('hidden')
+        })
+
+        foll.forEach(fo => {
+            fo.addEventListener('click', () => {
+                let txt = fo.querySelector('p').textContent
+                if (txt != 'followers') {
+                    folwr.classList.remove('hidden')
+                    black.classList.remove('invisible')
+                } else {
+                    foling.classList.remove('hidden')
+                    black.classList.remove('invisible')
+                }
+            });
+        });
+
+        removes.forEach(r => {
+            r.addEventListener('click', async () => {
+                let requestId = r.querySelector('input').value
+                ffl.forEach(f => {
+                    let n = f.textContent.trim()
+                    let c = Number(n) - 1
+                    n = c
+                });
+
+                load.classList.remove('invisible')
+                const res = await fetch('/follow/remove', {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({ requestId: Number(requestId) })
+                })
+                let result = await res.json()
+                if (result.success) {
+                    r.parentElement.parentElement.innerHTML = ''
+                    load.classList.add('invisible')
+                }
+            })
+        })
+
+        function updat() {
+
+            const load = document.querySelector('.load');
+            function updateCounter(selector, delta) {
+                const el = document.querySelector(selector);
+                if (!el) return;
+
+                const count = Number(el.textContent.trim());
+                el.textContent = Math.max(0, count + delta);
+            }
+            function addUserToList(user) {
+                const addd = document.querySelector('.addd');
+                if (!addd) return;
+
+                const div = document.createElement('div');
+                div.className =
+                    'flex flex-row px-2 p-2 items-center rounded-lg gap-5 w-[100%]';
+
+                div.innerHTML = `
+        <div class="flex flex-row items-center w-[80%] gap-2">
+            <img src="${user.image_src}"
+                class="size-12 rounded-full border border-gray-300"
+                style="object-fit: cover;" />
+            <div class="flex flex-col">
+                <span class="font-semibold">${user.Username}</span>
+                <span class="text-sm text-gray-500">${user.First_name}</span>
+            </div>
+        </div>
+        <button class="unfollow px-3 py-1 rounded-lg text-xs bg-zinc-200 cursor-pointer">
+            unfollow
+            <input type="hidden" value="${user.Id}">
+        </button>
+    `;
+                addd.prepend(div);
+            }
+            function updat() {
+                document.addEventListener('click', async (e) => {
+                    const btn = e.target.closest('.follow, .unfollow');
+                    if (!btn) return;
+
+                    const requestId = Number(btn.querySelector('input')?.value);
+                    if (!requestId) return;
+
+                    const isFollow = btn.textContent.trim() === 'Follow';
+
+                    try {
+                        if (isFollow) {
+                            const res = await fetch('/follow/request', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ requestId })
+                            });
+
+                            const result = await res.json();
+                            if (!result.success) return;
+
+                            updateCounter('.followers-count', +1);
+
+                            btn.textContent = 'unfollow';
+                            btn.classList.remove('follow');
+                            btn.classList.add('unfollow');
+
+                            if (result.data) addUserToList(result.data);
+
+                        } else {
+                            const res = await fetch('/follow/unfollow', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ requestId })
+                            });
+
+                            const result = await res.json();
+                            if (!result.success) return;
+
+                            updateCounter('.followers-count', -1);
+
+                            btn.textContent = 'Follow';
+                            btn.classList.remove('unfollow');
+                            btn.classList.add('follow');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    } finally {
+                        window.location.reload()
+                    }
+                });
+            }
+            return updat();
+        }
+        updat()
+
+        function again() {
+            const likes = document.querySelectorAll('.like')
+
+            likes.forEach(like => {
+                like.addEventListener('click', async () => {
+                    let postId = like.querySelector("input[type=hidden]").value
+                    let div = like.querySelector("div")
+                    div.classList.remove('hidden')
+                    let btn = like.querySelector("button")
+                    btn.classList.add('hidden')
+
+                    const res = await fetch('/post/like', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({ postid: Number(postId) })
+                    })
+                    let result = await res.json()
+
+                    if (result.sucess) {
+                        let iCon = like.querySelector("button i")
+                        iCon.classList.toggle("fa-solid")
+                        iCon.classList.toggle("fa-regular")
+                        div.classList.add('hidden')
+                        btn.classList.remove('hidden')
+                        let likecount = like.querySelector("span")
+                        likecount.textContent = `${result.totalLikes} Like`
+                    }
+                });
+            })
+        }
+        again()
+
+        function stop() {
+            setTimeout(() => {
+                load.classList.add('invisible')
+            }, 2000);
+        }
+
+    </script>
+
+</body>
+
+</html>

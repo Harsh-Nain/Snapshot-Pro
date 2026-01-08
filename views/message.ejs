@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Snapshot Messages</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/b3b89cf277.js" crossorigin="anonymous"></script>
+</head>
+
+<style>
+    .hoP {
+        position: fixed;
+        left: 5%;
+        top: 0;
+        width: 0;
+        overflow: hidden;
+        transition: all 0.6s linear;
+        background: white;
+    }
+
+    .active {
+        border: 2px solid rgb(0, 255, 0);
+    }
+</style>
+
+<body class="text-black overflow-hidden">
+
+    <div class="w-full h-screen flex bg-white">
+        <aside
+            class="hidden md:flex bts4 md:w-[12vh] flex-col gap-4 nav2 py-4 px-3 border-r border-black bg-white buttonBar">
+
+            <div class="flex flex-row items-center gap-2 pt-5">
+                <img src="https://res.cloudinary.com/ddiyrbync/image/upload/v1767356520/ChatGPT_Image_Jan_2_2026_05_50_04_PM_xpxaqz.jpg"
+                    class="size-10" style="object-fit: cover;" alt="">
+                <span class="text-xl text-cusive overflow-hidden">Snapshot</span>
+            </div>
+            <a href="/" class=" border-1 border-solid border-white p-2 rounded-lg flex gap-3 items-center">
+                <svg aria-label="Home" class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
+                    viewBox="0 0 24 24" width="24">
+                    <title>Home</title>
+                    <path
+                        d="m21.762 8.786-7-6.68C13.266.68 10.734.68 9.238 2.106l-7 6.681A4.017 4.017 0 0 0 1 11.68V20c0 1.654 1.346 3 3 3h5.005a1 1 0 0 0 1-1L10 15c0-1.103.897-2 2-2 1.09 0 1.98.877 2 1.962L13.999 22a1 1 0 0 0 1 1H20c1.654 0 3-1.346 3-3v-8.32a4.021 4.021 0 0 0-1.238-2.894ZM21 20a1 1 0 0 1-1 1h-4.001L16 15c0-2.206-1.794-4-4-4s-4 1.794-4 4l.005 6H4a1 1 0 0 1-1-1v-8.32c0-.543.226-1.07.62-1.447l7-6.68c.747-.714 2.013-.714 2.76 0l7 6.68c.394.376.62.904.62 1.448V20Z">
+                    </path>
+                </svg>
+            </a>
+            <a href="/profile"
+                class=" border-1 border-solid border-white p-2 rounded-xl hover:bg-zinc-100 flex gap-3 items-center">
+                <img src="<%= image_src.image_src %>" alt="" class=" size-7 rounded-[50%] object-cover"></a>
+
+            <a href="/post/post" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="w-6 h-6">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <path d="M12 8v8" />
+                    <path d="M8 12h8" />
+                </svg>
+            </a>
+
+            <a href="/message/message" class="p-2 rounded-lg  bg-zinc-100  hover:bg-zinc-100 flex gap-3 items-center">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+            </a>
+
+            <button id="notif" class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
+                <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
+                <span class="overflow-hidden w-0">Notification</span>
+            </button>
+
+            <a href="/logout" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center mt-auto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="w-6 h-6">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <path d="M16 17l5-5-5-5" />
+                    <path d="M21 12H9" />
+                </svg>
+            </a>
+
+        </aside>
+
+        <div class="w-[30%] border-r border-gray-300 hidden md:flex flex-col bg-white">
+
+            <div class="flex justify-between items-center px-5 py-4 text-lg font-bold text-black">
+                nainh_9526
+            </div>
+
+            <div class="px-4">
+                <input class="w-full px-4 py-2 rounded-full bg-gray-100 border border-gray-300 outline-none text-black"
+                    placeholder="Search">
+            </div>
+
+            <div class="p-4 flex gap-3 items-center">
+                <div class="w-14 h-14 bg-gray-300 rounded-full"></div>
+                <div>
+                    <p class="text-gray-500 text-sm">Your note</p>
+                </div>
+            </div>
+
+            <div class="px-4 flex justify-between text-sm text-gray-600">
+                <p>Messages</p>
+                <p>Requests</p>
+            </div>
+
+            <div id="userList" class="mt-4 flex-1 overflow-y-auto">
+
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col bg-white">
+
+            <div id="chatTop" class="hidden p-4 border-b border-gray-300 justify-between items-center bg-white">
+                <div class="flex items-center gap-3">
+                    <img id="topImg" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <h2 id="topName" class="font-semibold text-black"></h2>
+                        <p id="topUser" class="text-gray-500 text-sm"></p>
+                        <input type="hidden" value="" id="toId">
+                    </div>
+                </div>
+            </div>
+
+            <div id="welcome" class="flex flex-col justify-center items-center h-full text-center">
+                <div class="overflow-hidden h-20 w-20">
+                    <img class="w-full h-full rounded-full mb-4 bg-gray-300"
+                        src="https://res.cloudinary.com/ddiyrbync/image/upload/v1767356520/ChatGPT_Image_Jan_2_2026_05_50_04_PM_xpxaqz.jpg" />
+                </div>
+                <h1 class="text-2xl font-bold text-black">Snapshot</h1>
+                <p class="text-gray-500">Select a conversation to start chatting</p>
+            </div>
+
+            <div id="chatBox" class="hidden flex flex-col h-[80vh] bg-white">
+
+                <div id="messages" class="h-full overflow-y-auto space-y-3 px-2">
+                </div>
+
+                <div class="border-t border-gray-300 p-4 flex gap-3 bg-white">
+                    <input id="msgInput"
+                        class="flex-1 px-4 py-3 bg-gray-100 rounded-full border border-gray-400 outline-none text-black"
+                        placeholder="Message...">
+                    <button onclick="sendMessage()" class="px-6 py-2 bg-blue-500 rounded-full text-white">
+                        Send
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+        <input type="hidden" value="<%= Id %>" id="current">
+    </div>
+
+    <div
+        class="hoP flex flex-col gap-4 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
+        <p class="w-[100%] text-2xl text-bold">Notifications</p>
+        <div
+            class="overflow-y-scroll addnot w-[100%] overflow-x-hidden h-[100%] scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <% if (requestUser.length> 0) {%>
+                <% requestUser.forEach(request=> {%>
+                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                        <img src="<%= request.image_src %>" class="size-12 rounded-[50%]" alt="">
+                        <span class="flex flex-col text-sm w-[50%]">
+                            <p>
+                                <%=request.Username %>
+                            </p>
+                            <p class="text-zinc-600">
+                                <%=request.First_name %>
+                            </p>
+                        </span>
+                        <div class="flex flex-row gap-2 bt3">
+                            <button
+                                class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
+                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                            <button
+                                class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
+                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                        </div>
+                    </div>
+                    <% }); %>
+                        <% } else{%>
+                            <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
+                                <div class="_aajr"><svg aria-label="Activity On Your Posts"
+                                        class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="62" role="img"
+                                        viewBox="0 0 96 96" width="62">
+                                        <title>Activity On Your Posts</title>
+                                        <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor"
+                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                        </circle>
+                                        <path
+                                            d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
+                                            fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"></path>
+                                    </svg></div>
+                                <h2 class="_aajt"><span
+                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                        dir="auto"
+                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
+                                        On Your Posts</span></h2>
+                                <h3 class="_aaju"><span
+                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                        dir="auto"
+                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
+                                        someone likes or comments on one of your posts, you'll see it here.</span>
+                                </h3>
+                            </div>
+                            <% } %>
+                                <p class="py-2 w-full">Suggsion for you</p>
+                                <div class="flex flex-col gap-3">
+                                    <% if (suggsionId) {%>
+                                        <% suggsionId.forEach(request=> {%>
+                                            <div
+                                                class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                                                <button
+                                                    class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
+                                                    <p class="size-10"><img src="<%= request.image_src %>"
+                                                            class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                            alt="">
+                                                    </p>
+                                                    <input type="hidden" name="username" value="<%= request.Username %>"
+                                                        id="">
+                                                    <input type="hidden" name="Id" value="<%= request.Id %>" id="">
+                                                    <span class="flex flex-col gap-1">
+                                                        <p class="text-sm">
+                                                            <%= request.Username %>
+                                                        </p>
+                                                        <p class="text-zinc-600 text-xs">
+                                                            <%=request.First_name %>
+                                                        </p>
+                                                    </span>
+                                                </button>
+
+                                                <div class="flex flex-row gap-2 ">
+                                                    <button
+                                                        class="p-1 px-2 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
+                                                        <input type="hidden" value="<%= request.Id %>">
+                                                        <input type="hidden" value="<%= request.Username %>">
+                                                        <input type="hidden" value="<%= request.First_name %>">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                                <% } %>
+                                </div>
+
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+    <script src="https://fkj02t8n-3000.inc1.devtunnels.ms/socket.io/socket.io.js"></script>
+    <script>
+        let activeUser = null;
+        let conversation = []
+        const Id = document.getElementById("toId");
+        const current = document.getElementById("current");
+        const box = document.getElementById("messages");
+        const input = document.getElementById("msgInput");
+        const userList = document.getElementById("userList");
+        let socket;
+
+        function ago(t) {
+            const diffMs = Date.now() - new Date(t);
+            const s = Math.floor(diffMs / 1000);
+            const m = Math.floor(s / 60);
+            const h = Math.floor(m / 60);
+            const d = Math.floor(h / 24);
+            if (s < 60) return `Just Now`;
+            if (m < 60) return `${m} min ago`;
+            if (h < 24) return `${h} hr ago`;
+            return `${d} day ago`;
+        }
+
+        window.addEventListener('load', async () => {
+            socket = io("https://fkj02t8n-3000.inc1.devtunnels.ms", {
+                auth: { userId: current.value }
+            });
+
+            let userlist = await fetch('/message/userlist')
+            let res = await userlist.json()
+
+            if (res.message.length > 0) {
+                conversation = res.message
+
+                usrList()
+
+            } else {
+                userList.innerHTML = `
+                        <p class="text-center text-gray-500 mt-10">
+                    No Messages 😴
+                </p>`
+            }
+
+            socket.on("connect", () => console.log("Connected:", socket.id));
+
+            socket.on("message", (data) => {
+                let div = document.createElement("div");
+                div.className = "text-left";
+                div.innerHTML = `
+                    <div class="inline-block max-w-[70%]">
+                        <span class="px-4 py-2 inline-block rounded-2xl bg-gray-300 text-black">
+                            ${data.message}
+                        </span>
+                        <p class="text-gray-500 text-xs mt-1">${ago(new Date())}</p>
+                    </div>
+                `;
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+            });
+
+            socket.on("user-online", ({ userId }) => {
+                const user = conversation.find(u => String(u.Id) === String(userId));
+                if (!user) return;
+
+                user.isActive = true;
+                usrList()
+            });
+
+        });
+
+        function usrList(mess) {
+            userList.innerHTML = ""
+            conversation.forEach(mess => {
+                let div = document.createElement("div");
+                div.classList.add("flex", "items-center", "gap-3", "px-4", "py-3", "hover:bg-gray-200", "cursor-pointer");
+
+                div.addEventListener("click", () => {
+                    openChat(`${mess.Id}`, `${mess.First_name}`, `${mess.Username}`, `${mess.image_src}`);
+                });
+
+                div.innerHTML = `
+                    <img src="${mess.image_src}" class="w-12 h-12 rounded-full object-cover ${mess.isActive ? 'active' : ''}">
+                    <div>
+                    <p class="font-semibold text-black">
+                        ${mess.Username}
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            ${mess.First_name}
+                            </p>
+                            </div>`
+                userList.prepend(div)
+
+            })
+        }
+
+        function openChat(id, name, username, img) {
+            showMessage(id);
+            activeUser = name;
+
+            document.getElementById("welcome").classList.add("hidden");
+            document.getElementById("chatBox").classList.remove("hidden");
+            document.getElementById("chatTop").classList.remove("hidden");
+
+            document.getElementById("topName").innerText = name;
+            document.getElementById("topUser").innerText = username;
+            Id.value = id;
+            document.getElementById("topImg").src = img;
+        }
+
+        async function sendMessage() {
+            if (input.value.trim() === "") return;
+
+            socket.emit("message", { to: Id.value, message: input.value });
+            let response = await fetch("/message/saveMessage", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: input.value,
+                    reciverId: Id.value
+                })
+            });
+
+            let result = await response.json();
+
+            if (result.success) {
+                let div = document.createElement("div");
+                div.className = "text-right";
+
+                div.innerHTML = `
+                    <div class="inline-block max-w-[70%]">
+                        <span class="px-4 py-2 inline-block rounded-2xl bg-blue-500 text-white">
+                            ${input.value}
+                        </span>
+                        <p class="text-gray-500 text-xs mt-1">${ago(new Date())}</p>
+                    </div>
+                `;
+
+                input.value = "";
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        async function showMessage(id) {
+
+            let response = await fetch(`/message/showMessage?Id=${id}`, { method: "POST" });
+            let result = await response.json();
+            if (result.success) {
+                box.innerHTML = "";
+                console.log(result);
+                result.data.forEach(m => {
+                    let isMe = (id == m.receiverId);
+
+                    let div = document.createElement("div");
+                    div.className = isMe ? "text-right" : "text-left";
+
+                    div.innerHTML = `
+                        <div class="inline-block max-w-[70%]">
+                            <span class="px-2 py-1 inline-block rounded-lg
+                                ${isMe ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}">
+                                ${m.message}
+                            </span>
+                            <p class="text-gray-500 text-xs mt-1">
+                                ${ago(m.created_at)}
+                            </p>
+                        </div>
+                    `;
+                    box.appendChild(div);
+                });
+
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

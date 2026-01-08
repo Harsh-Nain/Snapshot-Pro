@@ -1,0 +1,4 @@
+node_modules
+.env
+.vscode
+/drizzle/output

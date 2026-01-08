@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Snapshot Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<style>
+    * {
+        font-family: cursive;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+        height: 100vh;
+    }
+
+    @keyframes shake {
+        0% {
+            transform: translateX(0)
+        }
+
+        25% {
+            transform: translateX(-4px)
+        }
+
+        50% {
+            transform: translateX(4px)
+        }
+
+        75% {
+            transform: translateX(-4px)
+        }
+
+        100% {
+            transform: translateX(0)
+        }
+    }
+</style>
+
+<body>
+    <div class="load invisible">
+        <div class="loaer">
+            <svg viewBox="0 0 80 80">
+                <circle r="32" cy="40" cx="40" id="test"></circle>
+            </svg>
+        </div>
+
+        <div class="loaer triangle">
+            <svg viewBox="0 0 86 80">
+                <polygon points="43 8 79 72 7 72"></polygon>
+            </svg>
+        </div>
+
+        <div class="loaer">
+            <svg viewBox="0 0 80 80">
+                <rect height="64" width="64" y="8" x="8"></rect>
+            </svg>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center justify-center gap-4 p-8 sm:flex-col">
+        <form action="login" method="post" class="flex flex-col sm:items-center sm:justify-center gap-6 w-[100%]">
+
+            <h1
+                class="text-4xl font-mono underline decoration-1 mb-6 decoration-white text-center text-zinc-700 dark:text-black">
+                Snapshot
+            </h1>
+
+            <input type="text" name="username"
+                class="p-2 bg-white border-1 border-zinc-400 in border-solid outline-none w-70 text-xs border-solid rounded-sm bg-zinc-100"
+                placeholder="Username or Email">
+
+            <input type="password" name="password"
+                class="p-2 bg-white border-1 border-zinc-400 in border-solid outline-none w-70 text-xs border-solid rounded-sm bg-zinc-100"
+                placeholder="Password">
+
+            <input type="submit" value="Login now"
+                class="bg-sky-500 a rounded-lg p-1 text-white w-[100%] cursor-pointer border-solid border-1 text-sm border-white hover:bg-sky-700">
+        </form>
+
+        <p class=" text-sm">OR</p>
+
+        <a href="/auth/register"
+            class="flex flex-col a sm:items-center text-black btn text-sm underline hover:underline cursor-pointer">
+            Signup & create new account
+        </a>
+    </div>
+
+    <script>
+        const load = document.querySelector('.load');
+        const username = document.querySelector("input[name='username']");
+        const password = document.querySelector("input[name='password']");
+        const submitBtn = document.querySelector("input[type='submit']");
+        const inputs = document.querySelectorAll(".in");
+
+        const tost = document.createElement("div");
+        tost.className = "tost";
+        tost.style.cssText = `
+            position:fixed;top:20px;right:20px;
+            transform:translateX(140%);
+            transition:.3s ease-in-out;
+            z-index:99999999999999999999999999999999999999;
+        `;
+        tost.innerHTML = `
+            <div class="flex flex-col w-72 text-xs">
+                <div class="flex items-center justify-between bg-zinc-300 h-14 rounded-lg"
+                    style="padding:10px">
+                    <div class="flex gap-2">
+                        <div class="bg-zinc-200 tostSvg"
+                            style="padding:6px;border-radius:6px;color:#2b9875">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m4.5 12.75 6 6 9-13.5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="tostMess">Status</p>
+                            <p class="text-zinc-500 tostMess">Message</p>
+                        </div>
+                    </div>
+                    <button class="cutTost text-gray-400"
+                        style="padding:4px;border-radius:6px">❌</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(tost);
+
+        const tostMess = tost.querySelectorAll(".tostMess");
+        const tostSvg = tost.querySelector(".tostSvg");
+        const cutTost = tost.querySelector(".cutTost");
+
+        cutTost.addEventListener("click",
+            () => tost.style.transform = "translateX(140%)");
+
+        function validateLogin() {
+            for (const input of inputs) {
+                if (!input.value.trim()) {
+                    animateError(input);
+                    showToast({ success: false, message: "Fill all fields" });
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function animateError(input) {
+            input.style.border = "2px solid #ff4d4d";
+            input.style.boxShadow = "0 0 8px rgba(255,77,77,.6)";
+            input.style.animation = "shake .25s";
+
+            setTimeout(() => {
+                input.style.animation = "none";
+                input.style.boxShadow = "none";
+            }, 400);
+        }
+
+        inputs.forEach(inp =>
+            inp.addEventListener("input",
+                () => {
+                    inp.style.border = "";
+                    inp.style.boxShadow = "none";
+                })
+        );
+
+        function showToast(data) {
+
+            if (data.success) {
+                tostSvg.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="#2b9875" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m4.5 12.75 6 6 9-13.5"></path>
+                    </svg>`;
+                tostMess[0].innerHTML = "Login Successful";
+            } else {
+                tostSvg.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6 6l12 12M18 6L6 18"/>
+                    </svg>`;
+                tostMess[0].innerHTML = "Login Failed";
+            }
+
+            tostMess[1].innerHTML = data.message || "";
+            tost.style.transform = "translateX(0)";
+            setTimeout(() => tost.style.transform = "translateX(140%)", 2500);
+        }
+
+        submitBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            if (!validateLogin()) return;
+
+            load.classList.remove("invisible");
+
+            const res = await fetch("/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: username.value.trim(),
+                    password: password.value
+                })
+            });
+
+            const data = await res.json();
+            showToast(data);
+
+            if (data.success && data.redirect) {
+                setTimeout(() => window.location.href = data.redirect, 600);
+            }
+            setTimeout(() => load.classList.add("invisible"), 2000);
+
+        });
+    </script>
+
+</body>
+
+</html>
