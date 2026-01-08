@@ -17,7 +17,6 @@ export const postData = async (req, res) => {
     console.log("Image:", image);
     console.log("Audio:", audio);
 
-
     await db.insert(posts).values({
         userId: Id,
         postName: postname,

@@ -955,7 +955,7 @@
 
         </div>
     </div>
-    <input type="hidden" class="usrs" value="<%= data.Id %>">
+    <input type="hidden" class="usrs" id="current" value="<%= data.Id %>">
     <input type="hidden" class="usrs" value="<%= data.Username %>">
     <input type="hidden" class="usrs" value="<%= data.First_name %>">
 
@@ -1072,6 +1072,7 @@
         let addnot = document.querySelector(".addnot")
         let usrs = document.querySelectorAll(".usrs")
         let loadMore = document.querySelectorAll(".loadMore")
+        const current = document.getElementById("current");
 
         let socket = null
 
@@ -1094,7 +1095,7 @@
         }
 
         window.addEventListener('load', () => {
-             socket = io({
+            socket = io({
                 auth: { userId: current.value }
             });
 

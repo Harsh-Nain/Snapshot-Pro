@@ -1,39 +1,60 @@
 import { db } from "../db/index.js";
 import { messages, users } from "../db/schems.js";
 import { Follower } from "../config/funstions.js";
-import { eq, or, and, asc, sql } from "drizzle-orm";
+import { eq, or, and, asc, sql, desc } from "drizzle-orm";
 
 export const Message = async (Id) => {
     const userId = Number(Id);
 
-    const data = await db
-        .selectDistinct({
-            Id: users.Id,
-            Username: users.Username,
-            First_name: users.First_name,
-            image_src: users.image_src,
+    const lastMessageSub = db
+        .select({
+            otherUserId: sql`
+        CASE
+          WHEN ${messages.senderId} = ${userId}
+          THEN ${messages.receiverId}
+          ELSE ${messages.senderId}
+        END
+      `.as("otherUserId"),
+
+            lastAt: sql`MAX(${messages.created_at})`.as("lastAt"),
         })
         .from(messages)
-        .innerJoin(
-            users,
-            eq(
-                users.Id,
-                sql`
-          CASE
-            WHEN ${messages.senderId} = ${userId}
-            THEN ${messages.receiverId}
-            ELSE ${messages.senderId}
-          END
-        `
-            )
-        )
         .where(
             or(
                 eq(messages.senderId, userId),
                 eq(messages.receiverId, userId)
             )
         )
-        .orderBy(asc(users.Username));
+        .groupBy(sql`otherUserId`)
+        .as("lm");
+
+    const data = await db
+        .select({
+            Id: users.Id,
+            Username: users.Username,
+            image_src: users.image_src,
+            First_name: users.First_name,
+            lastMessage: messages.message,
+            created_at: messages.created_at,
+        })
+        .from(messages)
+        .innerJoin(
+            lastMessageSub,
+            sql`
+        lm.otherUserId =
+          CASE
+            WHEN ${messages.senderId} = ${userId}
+            THEN ${messages.receiverId}
+            ELSE ${messages.senderId}
+          END
+        AND lm.lastAt = ${messages.created_at}
+      `
+        )
+        .innerJoin(
+            users,
+            eq(users.Id, sql`lm.otherUserId`)
+        )
+        .orderBy(asc(messages.created_at));
 
     return data;
 };
@@ -54,7 +75,7 @@ export const SaveMessage = async (req, res) => {
 export const ShowMessage = async (req, res) => {
     const { Id } = req.user;
     const otherUserId = Number(req.query.Id);
-    console.log(Id,otherUserId)
+    console.log(Id, otherUserId)
 
     const data = await db
         .select()
@@ -73,7 +94,7 @@ export const ShowMessage = async (req, res) => {
         )
         .orderBy(asc(messages.created_at));
 
-        res.json({ success: true, data });
+    res.json({ success: true, data });
 };
 
 export const addMessUSR = async (toMessId, Id) => {

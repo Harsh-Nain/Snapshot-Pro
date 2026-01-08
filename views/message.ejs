@@ -47,7 +47,7 @@
             </a>
             <a href="/profile"
                 class=" border-1 border-solid border-white p-2 rounded-xl hover:bg-zinc-100 flex gap-3 items-center">
-                <img src="<%= image_src.image_src %>" alt="" class=" size-7 rounded-[50%] object-cover"></a>
+                <img src="<%= user.image_src %>" alt="" class=" size-7 rounded-[50%] object-cover"></a>
 
             <a href="/post/post" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -84,7 +84,7 @@
         <div class="w-[30%] border-r border-gray-300 hidden md:flex flex-col bg-white">
 
             <div class="flex justify-between items-center px-5 py-4 text-lg font-bold text-black">
-                nainh_9526
+                <%= user.Username %>
             </div>
 
             <div class="px-4">
@@ -93,7 +93,8 @@
             </div>
 
             <div class="p-4 flex gap-3 items-center">
-                <div class="w-14 h-14 bg-gray-300 rounded-full"></div>
+                <img src="<%= user.image_src %>" class="size-12 rounded-full object-cover" alt="">
+
                 <div>
                     <p class="text-gray-500 text-sm">Your note</p>
                 </div>
@@ -136,14 +137,20 @@
                 <div id="messages" class="h-full overflow-y-auto space-y-3 px-2">
                 </div>
 
-                <div class="border-t border-gray-300 p-4 flex gap-3 bg-white">
-                    <input id="msgInput"
-                        class="flex-1 px-4 py-3 bg-gray-100 rounded-full border border-gray-400 outline-none text-black"
-                        placeholder="Message...">
-                    <button onclick="sendMessage()" class="px-6 py-2 bg-blue-500 rounded-full text-white">
+                <div class="border-t border-gray-300 px-2 sm:px-3 py-2 flex items-center gap-2 bg-white">
+
+                    <input id="msgInput" type="text" placeholder="Message..." class="flex-1 px-3 py-3 text-sm sm:text-base text-black 
+               outline-none rounded-full bg-gray-100
+               focus:bg-white focus:ring-2 focus:ring-blue-400">
+
+                    <button onclick="sendMessage()" class="text-blue-500 font-semibold text-sm sm:text-base
+               px-3 py-2 rounded-full hover:bg-blue-50
+               active:scale-95 transition">
                         Send
                     </button>
+
                 </div>
+
 
             </div>
 
@@ -276,21 +283,6 @@
                 auth: { userId: current.value }
             });
 
-            let userlist = await fetch('/message/userlist')
-            let res = await userlist.json()
-
-            if (res.message.length > 0) {
-                conversation = res.message
-
-                usrList()
-
-            } else {
-                userList.innerHTML = `
-                        <p class="text-center text-gray-500 mt-10">
-                    No Messages 😴
-                </p>`
-            }
-
             socket.on("connect", () => console.log("Connected:", socket.id));
 
             socket.on("message", (data) => {
@@ -308,18 +300,7 @@
                 box.scrollTop = box.scrollHeight;
             });
 
-            socket.on("user-online", ({ userId }) => {
-                const user = conversation.find(u => String(u.Id) === String(userId));
-                if (!user) return;
-
-                user.isActive = true;
-                usrList()
-            });
-
-            socket.on("online:list", ({ ids }) => {
-                console.log(ids)
-                usrList()
-            })
+            updateUsers()
 
         });
 
@@ -340,11 +321,11 @@
                         ${mess.Username}
                         </p>
                         <p class="text-gray-600 text-sm">
-                            ${mess.First_name}
+                            ${mess.lastMessage}
+                             <span class="text-right text-zinc-500 text-[10px]">${ago(mess.created_at)}</span>
                             </p>
                             </div>`
                 userList.prepend(div)
-
             })
         }
 
@@ -392,6 +373,7 @@
 
                 input.value = "";
                 box.appendChild(div);
+                updateUsers()
                 box.scrollTop = box.scrollHeight;
             }
         }
@@ -424,6 +406,45 @@
 
                 box.scrollTop = box.scrollHeight;
             }
+        }
+
+        document.getElementById("msgInput").addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+
+
+       async function updateUsers() {
+        conversation=[]
+
+            let userlist = await fetch('/message/userlist')
+            let res = await userlist.json()
+
+            if (res.message.length > 0) {
+                conversation = res.message
+                usrList()
+            } else {
+                userList.innerHTML = `
+                        <p class="text-center text-gray-500 mt-10">
+                    No Messages 😴
+                </p>`
+            }
+
+            socket.on("online:list", ({ onlineUsers }) => {
+                const myId = Number(current.value);
+                conversation.forEach(user => {
+                    if (onlineUsers.includes(String(user.Id))) {
+                        user.isActive = true;
+                    }
+                    if (user.Id === myId) {
+                        user.isActive = false;
+                    }
+                });
+                usrList();
+            });
         }
     </script>
 

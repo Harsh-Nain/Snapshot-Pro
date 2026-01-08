@@ -59,7 +59,6 @@ io.on("connection", (socket) => {
         userId,
     });
 
-
     socket.on("event", (data) => {
         console.log(data, ids[data.to]);
 
@@ -77,13 +76,14 @@ io.on("connection", (socket) => {
     });
 
     const onlineUsers = { ...ids };
-    delete onlineUsers[userId];
-    socket.broadcast.emit("online:list", {
-        ids: onlineUsers,
+
+    io.emit("online:list", {
+        onlineUsers: Object.keys(onlineUsers)
     });
 
+    socket.on("disconnect", () => {
+    });
 });
-
 
 if (process.env.MODE == "PROD") {
     server.listen(PORT, '0.0.0.0', () => {

@@ -12,13 +12,13 @@ router.get('/message', islogin, async (req, res) => {
     const { toMessId } = req.query;
     if (toMessId) await addMessUSR(toMessId, Id);
 
-    const [image_src] = await db.select({ image_src: users.image_src, }).from(users).where(eq(users.Id, Id))
+    const [user] = await db.select({ image_src: users.image_src, Username: users.Username }).from(users).where(eq(users.Id, Id))
 
     const requestUser = await RequestUser(Id);
     const suggsionId = await SuggsionId(Id);
 
     res.render('message', {
-        Id, suggsionId, requestUser, image_src
+        Id, suggsionId, requestUser, user
     });
 });
 
