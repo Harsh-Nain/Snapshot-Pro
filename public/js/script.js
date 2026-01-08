@@ -7,24 +7,21 @@ const hoP = document.querySelector(".hoP")
 
 notif.forEach(nof => {
     nof.addEventListener('click', () => {
-        console.log('ok');
         let i = nof.querySelector('i')
         if (window.innerWidth > 500) {
             if (notf.classList.contains('hidden')) {
                 nof.classList.add('active')
                 notf.classList.remove('hidden')
                 hoP.style.opacity = '0'
-                setTimeout(() => {
-                    buttonBar.querySelectorAll('span').forEach(span => {
-                        span.style.width = '0'
-                    })
-                    console.log('ko');
-                    hoP.style.width = '70vh'
-                    hoP.style.opacity = '1'
-                }, 400);
+                console.log(buttonBar);
+                buttonBar.querySelectorAll('span').forEach(span => {
+                    console.log(span)
+                    span.style.width = '0'
+                })
+                hoP.style.width = '70vh'
+                hoP.style.opacity = '1'
                 i.classList.replace('fa-regular', 'fa-solid')
             } else {
-                console.log('eks');
                 hoP.style.width = '0'
                 setTimeout(() => {
                     buttonBar.querySelectorAll('span').forEach(span => {

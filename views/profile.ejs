@@ -372,7 +372,7 @@
             <nav
                 class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-zinc-300 flex justify-around items-center py-2 md:hidden buttonBar">
 
-                <a href="/" class="flex flex-col items-center text-xs">
+                <a href="/" class="flex flex-col hover:bg-zinc-100 items-center text-xs">
                     <svg aria-label="Home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
                         <path d="M3 9.5L12 3l9 6.5"></path>
@@ -380,11 +380,12 @@
                     </svg>
                 </a>
 
-                <a href="/profile" class="flex flex-col items-center text-xs">
-                    <img src="<%= data.image_src %>" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;">
-                </a>
+                <button id="notif"
+                    class="p-2 rounded-lg text-sm cursor-pointer hover:bg-zinc-100 flex gap-3 items-center">
+                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
+                </button>
 
-                <a href="/post/post" class="flex flex-col items-center text-xs">
+                <a href="/post/post" class="flex flex-col hover:bg-zinc-100 items-center text-xs">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="w-6 h-6">
                         <rect x="3" y="3" width="18" height="18" rx="3" />
@@ -393,25 +394,33 @@
                     </svg>
                 </a>
 
-                <a href="/message/message" class="flex flex-col items-center text-xs">
+                <a href="/message/message" class="flex hover:bg-zinc-100 flex-col items-center text-xs">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="w-6 h-6">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                 </a>
 
-                <button id="notif"
-                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
-                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
-                </button>
-
+                <a href="/profile" class="flex flex-col bg-zinc-100 items-center text-xs">
+                    <img src="<%= data.image_src %>" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;">
+                </a>
             </nav>
+
+            <a href="/logout"
+                class="fixed top-0 right-0 right-0 md:hidden p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center mt-auto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="w-6 h-6">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <path d="M16 17l5-5-5-5" />
+                    <path d="M21 12H9" />
+                </svg>
+            </a>
 
             <aside class="hidden md:flex md:w-[260px] flex-col gap-4 nav2 py-4 px-3 bg-white buttonBar">
 
-                <div class="flex items-center gap-2 pt-2 px-2">
+                <a href="/" class="flex items-center gap-2 pt-2 px-2">
                     <span class="text-xl font-semibold overflow-hidden">Snapshot</span>
-                </div>
+                </a>
 
                 <a href="/" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
                     <svg aria-label="Home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -422,7 +431,7 @@
                     <span class="overflow-hidden">Home</span>
                 </a>
 
-                <a href="/profile" class="p-2 active rounded-lg flex gap-3 items-center">
+                <a href="/profile" class="p-2 active hover:bg-zinc-100 rounded-lg flex gap-3 items-center">
                     <img src="<%= data.image_src %>" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;">
                     <span class="overflow-hidden text-bold">Profile</span>
                 </a>
@@ -446,7 +455,7 @@
                 </a>
 
                 <button id="notif"
-                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
+                    class="p-2 rounded-lg text-sm cursor-pointer hover:bg-zinc-100 flex gap-3 items-center">
                     <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
                     <span class="overflow-hidden">Notification</span>
                 </button>
@@ -719,7 +728,8 @@
 
                 <div class="flex items-center justify-between px-4 py-3 border-b">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.pravatar.cc/50" id="postUserImage" class="w-8 h-8 rounded-full object-cover">
+                        <img src="https://i.pravatar.cc/50" id="postUserImage"
+                            class="w-8 h-8 rounded-full object-cover">
                         <p class="font-semibold flex items-center gap-1" id="postUsername"></p>
                     </div>
                     <button id="openOptions" class="text-xl cursor-pointer">⋯</button>
@@ -972,7 +982,7 @@
         </div>`
                         });
                         commestses()
-                        again()
+                        likesss()
                     }
                 }
             })
@@ -1297,7 +1307,7 @@
             })
         })
 
-        function again() {
+        function likesss() {
             const likes = document.querySelectorAll('.like')
 
             likes.forEach(like => {
@@ -1316,7 +1326,7 @@
                         body: JSON.stringify({ postid: Number(postId) })
                     })
                     let result = await res.json()
-
+                    console.log(result);
                     if (result.success) {
                         let iCon = like.querySelector("button i")
                         iCon.classList.toggle("fa-solid")
@@ -1329,7 +1339,7 @@
                 });
             })
         }
-        again()
+        likesss()
 
         function stop() {
             setTimeout(() => {
