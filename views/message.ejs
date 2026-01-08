@@ -248,7 +248,7 @@
     </div>
 
     <script src="/js/script.js"></script>
-    <script src="https://fkj02t8n-3000.inc1.devtunnels.ms/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         let activeUser = null;
         let conversation = []
@@ -272,7 +272,7 @@
         }
 
         window.addEventListener('load', async () => {
-            socket = io("https://fkj02t8n-3000.inc1.devtunnels.ms", {
+             socket = io({
                 auth: { userId: current.value }
             });
 

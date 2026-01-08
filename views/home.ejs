@@ -1060,7 +1060,7 @@
     </div>
 
     <script src="/js/script.js"></script>
-    <script src="https://fkj02t8n-3000.inc1.devtunnels.ms/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <script>
         const postIdc = document.getElementById("postIdc")
@@ -1094,11 +1094,9 @@
         }
 
         window.addEventListener('load', () => {
-            socket = io("http://localhost:3000", {
-                auth: {
-                    userId: usrs[0].value
-                }
-            })
+             socket = io({
+                auth: { userId: current.value }
+            });
 
             socket.on("connect", () => {
                 console.log("user live now", socket.id)
