@@ -504,16 +504,40 @@
                                                         <% } %>
                                 </div>
 
-                                <% if (!folingBfor) { %>
-                                    <button class="follow px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
-                                        Follow
-                                        <input type="hidden" value="<%= data.Id %>">
-                                    </button>
-                                    <% } else { %>
-                                        <div class="flex flex-row items-center gap-4">
+                                <div class="flex flex-row items-center gap-4">
+                                    <% if (!folingBfor) { %>
+                                        <button
+                                            class="follow w-[5rem] py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                            <div class="hidden flex justify-center items-center w-[75%]">
+                                                <svg class=" loader white" viewBox="0 0 384 384"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <circle class="active" pathLength="360" fill="transparent"
+                                                        stroke-width="32" cx="192" cy="192" r="176"></circle>
+                                                    <circle class="track" pathLength="360" fill="transparent"
+                                                        stroke-width="32" cx="192" cy="192" r="176"></circle>
+                                                </svg>
+                                            </div>
+                                            <span>Follow</span>
+                                            <input type="hidden" value="<%= data.Id %>">
+                                        </button>
+                                        <a style="display: none;"
+                                            class="message px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                            Message
+                                            <input type="hidden" value="<%= data.Id %>">
+                                        </a>
+                                        <% }else{ %>
                                             <button
-                                                class="unfollow px-5 py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
-                                                Unfollow
+                                                class="unfollow w-[5rem] py-1 bg-sky-500 hover:bg-sky-700 text-white rounded-lg">
+                                                <div class="hidden flex justify-center items-center w-[75%]">
+                                                    <svg class="loader white" viewBox="0 0 384 384"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <circle class="active" pathLength="360" fill="transparent"
+                                                            stroke-width="32" cx="192" cy="192" r="176"></circle>
+                                                        <circle class="track" pathLength="360" fill="transparent"
+                                                            stroke-width="32" cx="192" cy="192" r="176"></circle>
+                                                    </svg>
+                                                </div>
+                                                <span>Unfollow</span>
                                                 <input type="hidden" value="<%= data.Id %>">
                                             </button>
                                             <a
@@ -521,8 +545,8 @@
                                                 <input type="hidden" value="<%= data.Id %>">
                                                 Message
                                             </a>
-                                        </div>
-                                        <% } %>
+                                            <% } %>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1040,11 +1064,15 @@
         document.addEventListener('click', async (e) => {
             const btn = e.target.closest('.follow, .unfollow');
             if (!btn) return;
+            const lodr = btn.querySelector('div')
+            const span = btn.querySelector('span')
 
             const requestId = Number(btn.querySelector('input')?.value);
             if (!requestId) return;
 
             const isFollow = btn.classList.contains('follow');
+            lodr.classList.remove('hidden')
+            span.textContent = "";
 
             try {
                 const url = isFollow
@@ -1059,18 +1087,18 @@
 
                 const result = await res.json();
                 if (!result.success) return;
+                lodr.classList.add('hidden')
                 if (isFollow) {
                     updateCounter('.followers-count', +1);
-                    btn.innerHTML = `unfollow <input type="hidden" value="${requestId}">`;
+                    span.textContent = "Unfollow";
                     btn.classList.remove('follow');
                     btn.classList.add('unfollow');
                     message.style.display = 'block'
-
                 } else {
                     updateCounter('.followers-count', -1);
-                    btn.innerHTML = `Follow <input type="hidden" value="${requestId}">`;
-                    btn.classList.remove('unfollow');
+                    span.textContent = "Follow";
                     btn.classList.add('follow');
+                    btn.classList.remove('unfollow');
                     message.style.display = 'none'
                 }
             } catch (err) {

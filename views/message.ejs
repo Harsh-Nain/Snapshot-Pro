@@ -416,9 +416,8 @@
         });
 
 
-
-       async function updateUsers() {
-        conversation=[]
+        async function updateUsers() {
+            conversation = []
 
             let userlist = await fetch('/message/userlist')
             let res = await userlist.json()

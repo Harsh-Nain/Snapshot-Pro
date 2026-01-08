@@ -160,6 +160,10 @@
         --active: #616161;
     }
 
+    .white {
+        --active: white;
+    }
+
     @keyframes spin {
         0% {
             rotate: 0deg;
@@ -445,4 +449,4 @@
         position: fixed;
         bottom: 0;
         z-index: 99999999999999999999999999;
-    }    
+    }
