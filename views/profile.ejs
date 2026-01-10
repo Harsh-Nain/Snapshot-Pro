@@ -102,8 +102,7 @@
 
         .cross {
             position: absolute;
-            right: 0%;
-            top: -6%;
+            right: 6%;
             color: rgb(0, 0, 0);
             cursor: pointer;
         }
@@ -149,7 +148,7 @@
 
         .commbg {
             background-color: transparent;
-            height: 50vh;
+            padding: 0;
         }
 
         .hoP {
@@ -473,73 +472,70 @@
             </aside>
 
             <main
-                class="flex-1 flex justify-center px-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-[98vh] sm:px-6 py-4">
+                class="flex-1 flex justify-center p-0 md:px-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-[98vh] sm:px-6 py-4">
 
-                <div class="w-full max-w-5xl bg-white rounded-xl p-4 flex flex-col gap-6 items-center">
+                <div class="w-full max-w-5xl bg-white rounded-xl h-[92vh] md:p-4 flex flex-col gap-6 items-center">
 
-                    <div class="flex flex-col gap-3 pb-4 w-full items-center">
-                        <div class="flex flex-col sm:flex-row gap-10 my-5 items-center sm:items-start">
+                    <div class="flex w-full flex-col sm:flex-row gap-10 my-5 items-center sm:items-start">
 
-                            <div class="flex flex-col items-center sm: gap-2 size-30">
-                                <img class="w-full h-full rounded-full object-cover" src="<%= data.image_src %>" alt="">
+                        <div class="flex flex-col items-center sm: gap-2 size-30">
+                            <img class="w-full h-full rounded-full object-cover" src="<%= data.image_src %>" alt="">
+                        </div>
+
+                        <div class="flex-1 flex flex-col gap-2 items-center sm:items-start">
+                            <p class="font-semibold">
+                                <%= data.Username %>
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                <%= data.First_name %>
+                            </p>
+
+                            <div class="flex flex-wrap gap-4 text-sm text-gray-700">
+                                <% if (userPost) { %>
+                                    <span class="flex gap-1">
+                                        <b>
+                                            <%= userPost.length %>
+                                        </b> posts
+                                    </span>
+                                    <% } %>
+
+                                        <% if (following) { %>
+                                            <span class="flex gap-1 foll cursor-pointer foll">
+                                                <b class="ffl">
+                                                    <%= following.length %>
+                                                </b>
+                                                <p>followers</p>
+                                            </span>
+                                            <% } %>
+
+                                                <% if (follower) { %>
+                                                    <span class="flex gap-1 foll florss cursor-pointer foll">
+                                                        <b>
+                                                            <%= follower.length %>
+                                                        </b>
+                                                        <p>following</p>
+                                                    </span>
+                                                    <% } %>
                             </div>
+                            <p class="text-xs text-gray-500">
+                                <%= data.bio %>
+                            </p>
 
-                            <div class="flex-1 flex flex-col gap-2 items-center sm:items-start">
-                                <p class="font-semibold">
-                                    <%= data.Username %>
-                                </p>
-                                <p class="text-xs text-gray-500">
-                                    <%= data.First_name %>
-                                </p>
-
-                                <div class="flex flex-wrap gap-4 text-sm text-gray-700">
-                                    <% if (userPost) { %>
-                                        <span class="flex gap-1">
-                                            <b>
-                                                <%= userPost.length %>
-                                            </b> posts
-                                        </span>
-                                        <% } %>
-
-                                            <% if (following) { %>
-                                                <span class="flex gap-1 foll cursor-pointer foll">
-                                                    <b class="ffl">
-                                                        <%= following.length %>
-                                                    </b>
-                                                    <p>followers</p>
-                                                </span>
-                                                <% } %>
-
-                                                    <% if (follower) { %>
-                                                        <span class="flex gap-1 foll florss cursor-pointer foll">
-                                                            <b>
-                                                                <%= follower.length %>
-                                                            </b>
-                                                            <p>following</p>
-                                                        </span>
-                                                        <% } %>
-                                </div>
-                                <p class="text-xs text-gray-500">
-                                    <%= data.bio %>
-                                </p>
-
-
-                                <div class="flex flex-row gap-4">
-                                    <button
-                                        class="edit cursor-pointer mt-2 px-5 py-1 text-sm border rounded-lg bg-zinc-100">
-                                        Edit Profile
-                                    </button>
-                                    <a
-                                        class="message cursor-pointer mt-2 px-5 py-1 text-sm border rounded-lg bg-zinc-100">
-                                        <input type="hidden" value="<%= data.Id %>">
-                                        Message
-                                    </a>
-                                </div>
+                            <div class="flex flex-row gap-4">
+                                <button
+                                    class="edit cursor-pointer mt-2 px-5 py-1 text-sm border rounded-lg bg-zinc-100">
+                                    Edit Profile
+                                </button>
+                                <a class="message cursor-pointer mt-2 px-5 py-1 text-sm border rounded-lg bg-zinc-100">
+                                    <input type="hidden" value="<%= data.Id %>">
+                                    Message
+                                </a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-[80%] border-t border-zinc-400 pt-3">
+                    <div
+                        class="grid grid-cols-3 sm:grid-cols-3 gap-2 w-[97%] md:w-[100%] border-t border-zinc-400 pt-3">
                         <% userPost.forEach(p=> { %>
                             <div class="post cursor-pointer" style="aspect-ratio: 1/1.1;">
                                 <input type="hidden" name="postid" value="<%= p.Id %>">
@@ -650,7 +646,7 @@
 
     <input type="hidden" value="<%= data.Id %>" id="data">
 
-    <div class="fixed inset-0 bg-black/40 flex justify-center editDiv hidden items-center z-50">
+    <div class="fixed b-0 md:inset-0 bg-black/40 flex justify-center editDiv hidden items-center z-50">
 
         <div class="bg-white rounded-2xl shadow-xl p-5 edits overflow-hidden h-0">
 
@@ -707,54 +703,63 @@
         </div>
     </div>
 
-    <div class="fixed inset-0 commbg bg-black/40 flex invisible justify-center items-center z-50">
-        <p class="cross"><i class="fa-solid fa-xmark fa-2xl"></i></p>
-        <div class="loddd hidden w-[60px]">
-            <svg class="loader gry" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+    <div class="fixed inset-0 commbg bg-black/60 invisible flex items-center justify-center z-50 p-0 sm:p-3">
+
+        <button
+            class="absolute top-4 right-4 z-50 cross bg-black/60 rounded-full w-10 z-20 h-10 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-white text-xl" style="color: white;"></i>
+        </button>
+
+        <div class="loddd hidden w-14 absolute z-50">
+            <svg class="loader gry" viewBox="0 0 384 384">
                 <circle class="active" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
                 </circle>
                 <circle class="track" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
                 </circle>
             </svg>
         </div>
-        <div class="w-[75%] mx-auto h-[90%] bg-white loadedd hidden rounded-md flex">
 
-            <div class="w-1/2 bg-black flex items-center overflow-hidden justify-center">
-                <img src="https://i.pravatar.cc/600" id="postImage" alt="Post Not Found..."
+        <div class="loadedd hidden bg-white shadow-xl w-full h-full sm:h-[95vh] sm:max-w-5xl 
+               flex flex-col md:flex-row overflow-hidden">
+
+            <div class="w-full md:w-1/2 bg-black flex items-center justify-center max-h-[50vh] md:max-h-full">
+                <img id="postImage" src="https://i.pravatar.cc/600" alt="Post Not Found..."
                     class="w-full h-full object-contain">
             </div>
 
-            <div class="w-1/2 flex flex-col">
+            <div class="w-full md:w-1/2 flex flex-col">
 
-                <div class="flex items-center justify-between px-4 py-3 border-b">
+                <div class="flex items-center justify-between px-4 py-3 border-b sticky top-0 bg-white z-10">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.pravatar.cc/50" id="postUserImage"
+                        <img id="postUserImage" src="https://i.pravatar.cc/50"
                             class="w-8 h-8 rounded-full object-cover">
-                        <p class="font-semibold flex items-center gap-1" id="postUsername"></p>
+                        <p id="postUsername" class="font-semibold text-sm truncate max-w-[160px]"></p>
                     </div>
-                    <button id="openOptions" class="text-xl cursor-pointer">⋯</button>
+                    <button id="openOptions" class="text-2xl leading-none">⋯</button>
                 </div>
 
-                <div class="flex-1 overflow-y-auto px-4 py-3 text-sm leading-6 commentsDiv"></div>
-                <div class="likesection p-[10px]"></div>
+                <div class="commentsDiv overflow-y-scroll h-[20vh] md:h-[62vh] px-4 py-3 text-sm"></div>
 
-                <div class="px-4 py-3 flex border-1 border-solid border-zinc-300 items-center gap-2">
-                    <input type="text" class="flex-1 outline-none text-sm" id="newComment"
-                        placeholder="Add a comment...">
-                    <input type="hidden" name="postId" value="" class="postIdc">
-                    <input type="hidden" name="postId" value="" id="currentusr">
-                    <button class="text-blue-500 font-semibold hover:underline text-sm cursor-pointer"
-                        id="creatComment">
+                <div class="likesection px-4 py-2 border-t"></div>
+
+                <div class="px-3 py-2 border-t flex items-center gap-2 sticky bottom-0 bg-white">
+                    <input id="newComment" type="text" placeholder="Add a comment..."
+                        class="flex-1 outline-none text-sm bg-transparent">
+                    <input type="hidden" class="postIdc">
+                    <input type="hidden" id="currentusr">
+                    <button id="creatComment" class="text-blue-500 font-semibold text-sm hover:underline">
                         Post
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div id="postOptions" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div id="postOptions"
+        class="fixed inset-0 bg-black/50 flex h-[80vh] top-12 items-center justify-center z-50 hidden">
 
-        <div class="bg-white w-[40%] rounded-2xl overflow-hidden text-center">
+        <div class="bg-white w-[100%] md:w-[40%] rounded-2xl overflow-hidden text-center">
 
             <form action="/post/delete" method="post"
                 class="w-full py-3 text-sm cursor-pointer text-red-500 font-semibold border-b border-zinc-300">
@@ -1069,7 +1074,7 @@
         <div class="w-[90%] flex flex-row gap-2">
             <p><img src="${comment.image_src}" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;"></p>
             <div class="flex flex-col">
-                <span class="flex items-center flex-row gap-5">
+                <span class="flex flex-row gap-5">
                     <p>${comment.username}</p>
                     <p class="text-zinc-600 text-sm" style="font-family: sans-serif;">${comment.created_at}</p>
                 </span>
@@ -1099,7 +1104,7 @@
                 div.innerHTML = ` <div class="w-[90%] flex flex-row gap-2">
             <p><i class="fa-solid fa-circle-user fa-lg" style="color: #000000;"></i></p>
             <div class="flex flex-col">
-                <span class="flex items-center flex-row gap-5">
+                <span class="flex flex-row gap-5">
                     <p class="font-[500]">${currentusr.value}</p>
                     <p class="w-[60%] comm rounded-lg text-light leading-relaxed break-words line-clamp-[3.4] ">
                         ${Comment}

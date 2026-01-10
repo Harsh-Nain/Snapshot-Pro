@@ -619,30 +619,24 @@
 
             <div class="flex flex-col gap-6 items-center w-full lg:w-[70%] h-[100vh] px-3 sm:px-6">
 
-                <!-- Title -->
                 <h1 class="text-3xl sm:text-4xl font-semibold mt-6 text-zinc-700 tracking-tight">
                     Create Post
                 </h1>
 
-                <!-- Card -->
                 <div class="w-full max-w-4xl mx-auto border border-zinc-200 bg-white rounded-2xl 
                overflow-hidden shadow-sm flex flex-col lg:flex-row">
 
-                    <!-- Image Upload -->
-                    <div class=" h-[30vh] w-full lg:w-1/2">
+                    <div class=" h-[34vh] w-full lg:w-1/2">
                         <label for="fileInput" id="dropArea" class="relative w-full h-[260px] sm:h-[320px] lg:h-[420px]
                        flex items-center justify-center cursor-pointer overflow-hidden
                        border-b lg:border-b-0 lg:border-r border-zinc-200
                        bg-zinc-50 hover:bg-zinc-100 transition">
 
-                            <!-- Placeholder -->
                             <span id="uploadText" class="text-zinc-400 text-sm text-center px-4">
                                 Drag & Drop image<br class="hidden sm:block">or click to upload
                             </span>
 
-                            <!-- Preview -->
                             <img id="preview" class="hidden absolute inset-0 w-full h-full object-cover" />
-
                             <input type="file" id="fileInput" name="post" accept="image/*" class="hidden" required>
                         </label>
                     </div>

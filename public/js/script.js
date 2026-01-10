@@ -13,9 +13,7 @@ notif.forEach(nof => {
                 nof.classList.add('active')
                 notf.classList.remove('hidden')
                 hoP.style.opacity = '0'
-                console.log(buttonBar);
                 buttonBar.querySelectorAll('span').forEach(span => {
-                    console.log(span)
                     span.style.width = '0'
                 })
                 hoP.style.width = '70vh'
