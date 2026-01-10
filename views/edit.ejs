@@ -489,9 +489,10 @@
 
                         <div class="w-full lg:w-1/2">
                             <label for="fileInput" id="dropArea"
-                                class="w-full h-[280px] lg:h-[400px] flex items-center justify-center cursor-pointer overflow-hidden border-b lg:border-b-0 lg:border-r border-gray-300 hover:bg-gray-100">
+                                class="w-full h-[30vh] lg:h-[400px] flex items-center justify-center cursor-pointer overflow-hidden border-b lg:border-b-0 lg:border-r border-gray-300 hover:bg-gray-100">
 
-                                <img id="preview" class="w-full h-full object-cover" src="<%= editpost.image_url %>" />
+                                <img id="preview" class="w-full h-[30vh] object-cover"
+                                    src="<%= editpost.image_url %>" />
                                 <input type="file" id="fileInput" name="post" accept="image/*" class="hidden">
                             </label>
 
@@ -510,7 +511,46 @@
                                 class="w-full discription p-2 bg-gray-100 border border-gray-300 rounded-lg text-sm outline-none resize-none h-28"
                                 placeholder="Description (optional)"><%= editpost.desc %></textarea>
 
-                            <label class="flex items-center gap-2 justify-center">
+                            <div class="flex items-center justify-between gap-3 px-4 py-3
+               rounded-xl border border-dashed border-sky-300
+               bg-sky-50 cursor-pointer
+               hover:bg-sky-100 transition">
+
+                                <div class="flex items-center gap-3">
+
+                                    <div id="musicToggle" class="w-9 h-9 flex items-center justify-center
+                   rounded-full bg-sky-100 text-sky-600 cursor-pointer">
+                                        <i class="fa-solid fa-music"></i>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center gap-2">
+                                            <span class="songname text-sm font-medium text-sky-700 w-[23vh] truncate">
+                                                Add music
+                                            </span>
+
+                                            <button id="removeSong" type="button"
+                                                class="hidden text-zinc-400 hover:text-red-500 transition">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </div>
+
+                                        <span class="text-xs text-sky-500">
+                                            MP3, WAV · Optional
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <label for="songInput"
+                                    class="text-xs text-sky-600 font-semibold hover:underline cursor-pointer">
+                                    Browse
+                                </label>
+
+                                <input type="file" id="songInput" accept="audio/*" class="hidden">
+                                <audio id="songPreview" class="hidden"></audio>
+                            </div>
+
+                            <label class="flex items-center gap-2">
                                 <input class="isPublic" type="checkbox" />
                                 <span>Private Post</span>
                             </label>
@@ -635,8 +675,75 @@
         let postname = document.querySelector(".postname");
         let id = document.querySelector(".id");
         let username = document.querySelector(".username");
-
         let imgFile = null;
+
+        const songInput = document.getElementById("songInput");
+        const songPreview = document.getElementById("songPreview");
+        const songname = document.querySelector(".songname");
+        const musicToggle = document.getElementById("musicToggle");
+        const musicIcon = musicToggle.querySelector("i");
+        const removeSongBtn = document.getElementById("removeSong");
+
+        let songFile = null;
+        let isPlaying = false;
+
+        songInput.addEventListener("change", () => {
+            if (!songInput.files[0]) return;
+
+            songFile = songInput.files[0];
+
+            const songName = songFile.name
+                .replace(/\.[^/.]+$/, "")
+                .replace(/[_-]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+
+            songname.innerHTML = `<marquee>${songName}</marquee>`;
+
+            songPreview.src = URL.createObjectURL(songFile);
+            songPreview.classList.remove("hidden");
+            songPreview.load();
+
+            removeSongBtn.classList.remove("hidden");
+            isPlaying = false;
+            musicIcon.classList.remove("text-red-500");
+        });
+
+        musicToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (!songPreview.src) return;
+
+            if (isPlaying) {
+                songPreview.pause();
+                musicIcon.classList.remove("text-red-500");
+            } else {
+                songPreview.play();
+                musicIcon.classList.add("text-red-500");
+            }
+
+            isPlaying = !isPlaying;
+        });
+
+        songPreview.addEventListener("ended", () => {
+            isPlaying = false;
+            musicIcon.classList.remove("text-red-500");
+        });
+
+        removeSongBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            songFile = null;
+            songInput.value = "";
+            songPreview.pause();
+            songPreview.src = "";
+            songPreview.classList.add("hidden");
+
+            songname.innerText = "Add music";
+            removeSongBtn.classList.add("hidden");
+            musicIcon.classList.remove("text-red-500");
+            isPlaying = false;
+        });
+
 
         fileInput.addEventListener("change", (e) => {
             if (e.files[0]) showPreview(e.files[0]);
@@ -679,6 +786,9 @@
         submit.addEventListener('click', async () => {
             let dta = new FormData();
 
+            if (songFile) {
+                dta.append("song", songFile);
+            }
             dta.append("post", imgFile);
             dta.append("id", id.value);
             dta.append("postname", postname.value);

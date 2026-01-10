@@ -9,19 +9,23 @@ export const postData = async (req, res) => {
     const { Id } = req.user;
 
     isPublic = isPublic === undefined ? true : false;
-    console.log(req.files)
     const image = req.files.post[0];
 
     const audio = req.files.song ? req.files.song[0] : null;
 
-    console.log("Image:", image);
-    console.log("Audio:", audio);
+    let imagePath = image.path
+    let songPath = ''
+
+    if (audio) {
+        songPath = audio.path
+    }
 
     await db.insert(posts).values({
         userId: Id,
         postName: postname,
         desc: discription,
         image_url: imagePath,
+        songUrl: songPath,
         isPublic,
     });
 
@@ -215,6 +219,7 @@ export const getPosts = async (req, res) => {
         .select({
             Id: posts.Id,
             image_url: posts.image_url,
+            songUrl: posts.songUrl,
             desc: posts.desc,
             Likes: posts.Likes,
             username: users.Username,

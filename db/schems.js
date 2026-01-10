@@ -24,6 +24,7 @@ export const posts = mysqlTable("post", {
     postName: varchar("postName", { length: 255 }),
     desc: text("desc"),
     image_url: text("image_url"),
+    songUrl: text("songUrl").default(""),
     isPublic: boolean("isPublic").default(true),
     created_at: timestamp("created_at").defaultNow(),
     Likes: int("Likes").default(0),

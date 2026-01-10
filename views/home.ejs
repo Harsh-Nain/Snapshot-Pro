@@ -852,10 +852,23 @@
                                             <p class="text-left w-[100%] text-xs">
                                                 <%= post[i].desc %>
                                             </p>
-                                            <div class="post w-full overflow-hidden border border-gray-300">
+                                            <div class="post relative w-full overflow-hidden border border-gray-300">
+
+                                                <button
+                                                    class="mute-btn absolute bottom-3 right-3 z-20 bg-black/10 hover:bg-black text-white w-5 h-5 rounded-full flex items-center justify-center">
+                                                    <i class="fa-solid fa-xs fa-volume-xmark"></i>
+                                                </button>
+
+                                                <!-- Audio -->
+                                                <audio class="post-audio" muted preload="metadata">
+                                                    <source src="<%= post[i].songUrl %>" type="audio/mpeg">
+                                                </audio>
+
+                                                <!-- Image -->
                                                 <img class="w-[100%] h-[100%] object-contain" style="aspect-ratio: 1/1"
-                                                    src="<%=post[i].image_url%>">
+                                                    src="<%= post[i].image_url %>">
                                             </div>
+
                                             <div
                                                 class="text-left flex flex-row gap-2 w-100 overflow-hidden items-justify-between">
                                                 <div class="flex flex-col items-justify-between like">
@@ -1532,6 +1545,48 @@
                 load.classList.add('hidden')
             });
         }
+
+
+        let currentAudio = null;
+        let currentButton = null;
+
+        document.querySelectorAll(".mute-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const post = button.closest(".post");
+                const audio = post.querySelector(".post-audio");
+                const icon = button.querySelector("i");
+
+                if (!audio) return;
+
+                if (currentAudio && currentAudio !== audio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                    currentAudio.muted = true;
+                    currentButton.querySelector("i").className =
+                        "fa-solid fa-xs fa-volume-xmark";
+                }
+
+                if (audio.muted) {
+                    audio.muted = false;
+                    audio.play();
+                    icon.className = "fa-solid fa-xs fa-volume-high";
+                    currentAudio = audio;
+                    currentButton = button;
+                } else {
+                    audio.muted = true;
+                    icon.className = "fa-solid fa-xs fa-volume-xmark";
+                    currentAudio = null;
+                    currentButton = null;
+                }
+
+                audio.onended = () => {
+                    audio.muted = true;
+                    icon.className = "fa-solid fa-xs fa-volume-xmark";
+                    currentAudio = null;
+                    currentButton = null;
+                };
+            });
+        });
 
     </script>
 
