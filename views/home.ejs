@@ -185,6 +185,7 @@
         .ww {
             width: 100%;
             margin: 0;
+            padding: 0;
         }
 
         .cross {
@@ -272,7 +273,7 @@
     @media screen and (min-width:500px) {
 
         .hhh {
-            height: 97.5vh;
+            height: 100vh;
         }
 
     }
@@ -621,7 +622,7 @@
 
         .hhh {
             width: 100%;
-            height: 95vh;
+            height: 92.5vh;
         }
 
         .nowuser {
@@ -766,8 +767,6 @@
                 <a href="/profile" class="flex flex-col items-center text-xs">
                     <img src="<%= data.image_src %>" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;">
                 </a>
-
-
             </nav>
 
             <aside
@@ -778,6 +777,7 @@
                         class="size-10" style="object-fit: cover;" alt="">
                     <span class="text-xl text-cusive overflow-hidden">Snapshot</span>
                 </a>
+
                 <a href="/"
                     class=" border-1 border-solid border-white active p-2 rounded-lg bg-zinc-100 flex gap-3 items-center">
                     <svg aria-label="Home" class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
@@ -786,11 +786,14 @@
                         <path
                             d="m21.762 8.786-7-6.68a3.994 3.994 0 0 0-5.524 0l-7 6.681A4.017 4.017 0 0 0 1 11.68V19c0 2.206 1.794 4 4 4h3.005a1 1 0 0 0 1-1v-7.003a2.997 2.997 0 0 1 5.994 0V22a1 1 0 0 0 1 1H19c2.206 0 4-1.794 4-4v-7.32a4.02 4.02 0 0 0-1.238-2.894Z">
                         </path>
-                    </svg> <span class="overflow-hidden">Home</span> </a>
+                    </svg> <span class="overflow-hidden">Home</span>
+                </a>
+
                 <a href="/profile"
                     class=" border-1 border-solid border-white p-2 rounded-xl hover:bg-zinc-100 flex gap-3 items-center">
                     <img src="<%= data.image_src %>" alt="" class=" size-7 rounded-[50%]" style="object-fit: cover;">
-                    <span class="overflow-hidden">Profile</span></a>
+                    <span class="overflow-hidden">Profile</span>
+                </a>
 
                 <a href="/post/post" class="p-2 rounded-lg hover:bg-zinc-100 flex gap-3 items-center">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -829,16 +832,17 @@
             </aside>
 
             <div
-                class="w-full md:w-[43%] flex feed flex-col hhh overflow-y-scroll overflow-x-hidden scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] sm:items-center gap-10">
+                class="sm:p-0 w-full md:w-[43%] flex feed flex-col hhh overflow-y-scroll overflow-x-hidden scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] gap-10">
                 <div class="posts gap-3 flex flex-col w-[100%] pt-7">
-                    <div class=" flex flex-col ww sm:flex-col sm:items-center gap-3 w-[100%] pt-3 p-1">
+                    <div class="flex flex-col ww sm:items-center gap-3 w-[100%] pt-3 md:p-1">
                         <% if (post.length===0) { %>
                             <p class="text-gray-500">No posts yet</p>
                             <% } %>
                                 <% if (post.length>0) {%>
                                     <% for (let i=0; i < post.length; i++) { %>
-                                        <div class="flex pos flex-col rounded-xl w-[100%] gap-2 p-3">
-                                            <div class="flex items-center flex-row borde sm:items-center gap-3 w-100">
+                                        <div class="flex pos flex-col rounded-xl w-[100%] gap-2">
+                                            <div
+                                                class="flex items-center flex-row borde sm:items-center gap-3 w-100 px-3">
                                                 <button
                                                     class="cursor-pointer userOther flex flex-row items-center gap-2">
                                                     <img src="<%=post[i].image_src %>" alt=""
@@ -846,32 +850,37 @@
                                                     <input type="hidden" name="username" value="<%= post[i].username %>"
                                                         id="">
                                                     <input type="hidden" name="Id" value="<%= post[i].userId %>" id="">
-                                                    <%= post[i].username %>
+                                                    <p class="text-left w-[100%] flex flex-col">
+                                                        <span>
+                                                            <%= post[i].username %>
+                                                        </span>
+                                                        <span class="text-xs px-1">
+                                                            <%= post[i].desc %>
+                                                        </span>
+                                                    </p>
                                                 </button>
                                             </div>
-                                            <p class="text-left w-[100%] text-xs">
-                                                <%= post[i].desc %>
-                                            </p>
-                                            <div class="post relative w-full overflow-hidden border border-gray-300">
+
+                                            <div
+                                                class="post relative w-full overflow-hidden border-y-1 border-gray-300">
 
                                                 <button
                                                     class="mute-btn absolute bottom-3 right-3 z-20 bg-black/10 hover:bg-black text-white w-5 h-5 rounded-full flex items-center justify-center">
                                                     <i class="fa-solid fa-xs fa-volume-xmark"></i>
                                                 </button>
 
-                                                <!-- Audio -->
                                                 <audio class="post-audio" muted preload="metadata">
                                                     <source src="<%= post[i].songUrl %>" type="audio/mpeg">
                                                 </audio>
 
-                                                <!-- Image -->
-                                                <img class="w-[100%] h-[100%] object-contain" style="aspect-ratio: 1/1"
+                                                <img class="w-[100%] h-[100%] object-contain"
                                                     src="<%= post[i].image_url %>">
                                             </div>
 
                                             <div
-                                                class="text-left flex flex-row gap-2 w-100 overflow-hidden items-justify-between">
-                                                <div class="flex flex-col items-justify-between like">
+                                                class="text-left flex flex-row gap-2 w-100 overflow-hidden items-justify-between px-3">
+                                                <div
+                                                    class="flex flex-row gap-1 items-center md:flex-col items-justify-between like">
                                                     <input type="hidden" name="postid" value="<%= post[i].Id %>">
                                                     <div class="loadH hidden">
                                                         <svg class="loader" viewBox="0 0 384 384"
@@ -922,7 +931,7 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p class="text-sm comment">
+                                            <p class="text-sm comment px-3">
                                                 <input type="hidden" name="postId" value="<%=post[i].Id %>">View all
                                                 comments
                                             </p>
@@ -1460,28 +1469,26 @@
             data.forEach(post => {
 
                 const div = document.createElement("div");
-                div.classList.add("flex", "pos", "flex-col", "rounded-xl", "w-[100%]", "gap-2", "p-3");
-                div.innerHTML += `
-                                <div class="flex items-center flex-row borde sm:items-center gap-3 w-100">
-                <button
-                    class="cursor-pointer userOther flex flex-row items-center gap-2">
-                    <img src="${post.image_src}"
-                         alt="" class=" size-9 rounded-[50%]">
-                     <input type="hidden" name="username" value="${post.username}"
-                        id="">
+
+                div.classList.add("flex", "pos", "flex-col", "rounded-xl", "w-[100%]", "gap-2", "md:p-3");
+                div.innerHTML += `<div class="flex items-center flex-row borde sm:items-center gap-3 w-100">
+                 <button class="cursor-pointer userOther flex flex-row items-center gap-2">
+                    <img src="${post.image_src}" alt="" class=" size-9 rounded-[50%]" style="object-fit: cover;">
+                    <input type="hidden" name="username" value="${post.username}">
                      <input type="hidden" name="Id" value="${post.userId}" id="">
-                     ${post.username}
-                </button>
+                    <p class="text-left w-[100%] flex flex-col">
+                        <span>${post.username}</span>
+                        <span class="text-xs px-1">${post.desc}</span>
+                    </p>
+                    </button>
                </div>
-            <p class="text-left w-[100%] text-xs">
-                ${post.desc}
-            </p>
-            <div class="post w-full overflow-hidden">
-                <img class="w-[100%] h-[100%] object-cover" style="aspect-ratio: 1/.8"
+
+                <div class="post w-full overflow-hidden">
+                <img class="w-[100%] h-[100%] object-cover"
                        src="${post.image_url}">
-            </div>
-               <div
-                class="text-left flex flex-row gap-2 w-100 overflow-hidden items-justify-between">
+                </div>
+
+            <div class="text-left flex flex-row gap-2 w-100 overflow-hidden px-3">
                    <div class="flex flex-col items-justify-between like">
                     <input type="hidden" name="postid" value="${post.Id}">
                        <div class="loadH hidden">
@@ -1526,7 +1533,7 @@
                     </p >
                 </div >
             </div >
-            <p class="text-sm comment">
+            <p class="text-sm comment px-3">
                 <input type="hidden" name="postId" value="${post.Id}">View all
                 comments
             </p>
@@ -1545,7 +1552,6 @@
                 load.classList.add('hidden')
             });
         }
-
 
         let currentAudio = null;
         let currentButton = null;

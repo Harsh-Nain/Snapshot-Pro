@@ -56,6 +56,7 @@ export const Message = async (Id) => {
         )
         .orderBy(asc(messages.created_at));
 
+        console.log(data)
     return data;
 };
 

@@ -171,6 +171,10 @@
             width: 100%;
             height: 100vh;
         }
+
+        .imp {
+            height: 45vh;
+        }
     }
 
     @media screen and (min-width:500px) {
@@ -198,7 +202,7 @@
 
         .hoP {
             left: auto;
-            width: auto;
+            width: 100%;
         }
     }
 
@@ -534,8 +538,7 @@
                         </div>
                     </div>
 
-                    <div
-                        class="grid grid-cols-3 sm:grid-cols-3 gap-2 w-[97%] md:w-[100%] border-t border-zinc-400 pt-3">
+                    <div class="grid grid-cols-3 gap-2 w-[97%] md:w-[100%] border-t border-zinc-400 pt-3">
                         <% userPost.forEach(p=> { %>
                             <div class="post cursor-pointer" style="aspect-ratio: 1/1.1;">
                                 <input type="hidden" name="postid" value="<%= p.Id %>">
@@ -549,97 +552,100 @@
     </div>
 
     <div
-        class="hoP flex flex-col gap-4 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
+        class="hoP flex flex-col gap-3 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
         <p class="w-[100%] text-2xl text-bold">Notifications</p>
         <div
             class="overflow-y-scroll addnot w-[100%] overflow-x-hidden h-[100%] scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <% if (requestUser.length> 0) {%>
-                <% requestUser.forEach(request=> {%>
-                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
-                        <img src="<%= request.image_src || '' %>" class="size-12 rounded-[50%] object-cover" alt="">
-                        <span class="flex flex-col text-sm w-[50%]">
-                            <p>
-                                <%=request.Username %>
-                            </p>
-                            <p class="text-zinc-600">
-                                <%=request.First_name %>
-                            </p>
-                        </span>
-                        <div class="flex flex-row gap-2 bt3">
-                            <button
-                                class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
-                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
-                            <button
-                                class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
-                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
-                        </div>
-                    </div>
-                    <% }); %>
-                        <% } else{%>
-                            <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
-                                <div class="_aajr"><svg aria-label="Activity On Your Posts"
-                                        class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="62" role="img"
-                                        viewBox="0 0 96 96" width="62">
-                                        <title>Activity On Your Posts</title>
-                                        <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor"
-                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                        </circle>
-                                        <path
-                                            d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
-                                            fill="none" stroke="currentColor" stroke-linecap="round"
-                                            stroke-linejoin="round" stroke-width="2"></path>
-                                    </svg></div>
-                                <h2 class="_aajt"><span
-                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
-                                        dir="auto"
-                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
-                                        On Your Posts</span></h2>
-                                <h3 class="_aaju"><span
-                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
-                                        dir="auto"
-                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
-                                        someone likes or comments on one of your posts, you'll see it here.</span>
-                                </h3>
+                <div class="flex flex-col gap-5 mb-4">
+                    <% requestUser.forEach(request=> {%>
+                        <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                            <div class="w-[50px] h-[-webkit-fill-available] rounded-[50%] overflow-hidden">
+                                <p class="size-10"><img src="<%= request.image_src %>"
+                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                        style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                </p>
                             </div>
-                            <% } %>
-                                <p class="py-2 w-full">Suggsion for you</p>
-                                <div class="flex flex-col gap-3">
-                                    <% if (suggsionId) {%>
-                                        <% suggsionId.forEach(request=> {%>
-                                            <div
-                                                class="w-[100%] flex flex-row items-center items-justify-between gap-5">
-                                                <button
-                                                    class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
-                                                    <p class="size-10"><img src="<%= request.image_src %>"
-                                                            class="rounded-[50%] border-1 border-gray-400 border-solid"
-                                                            style="width: 100%; height: 100%; object-fit: cover;"
-                                                            alt="">
-                                                    </p>
-                                                    <input type="hidden" name="username" value="<%= request.Username %>"
-                                                        id="">
-                                                    <input type="hidden" name="Id" value="<%= request.Id %>" id="">
-                                                    <span class="flex flex-col gap-1">
-                                                        <p class="text-sm">
-                                                            <%= request.Username %>
-                                                        </p>
-                                                        <p class="text-zinc-600 text-xs">
-                                                            <%=request.First_name %>
-                                                        </p>
-                                                    </span>
-                                                </button>
+                            <span class="flex flex-col text-sm w-[50%]">
+                                <p>
+                                    <%=request.Username %>
+                                </p>
+                                <p class="text-zinc-600">
+                                    <%=request.First_name %>
+                                </p>
+                            </span>
+                            <div class="flex flex-row gap-2 bt3">
+                                <button
+                                    class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
+                                    <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                                <button
+                                    class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
+                                    <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+                <% } else{%>
+                    <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
+                        <div class="_aajr"><svg aria-label="Activity On Your Posts" class="x1lliihq x1n2onr6 x5n08af"
+                                fill="currentColor" height="62" role="img" viewBox="0 0 96 96" width="62">
+                                <title>Activity On Your Posts</title>
+                                <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2">
+                                </circle>
+                                <path
+                                    d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
+                                    fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg></div>
+                        <h2 class="_aajt"><span
+                                class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                dir="auto"
+                                style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
+                                On Your Posts</span></h2>
+                        <h3 class="_aaju"><span
+                                class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                dir="auto" style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
+                                someone likes or comments on one of your posts, you'll see it here.</span>
+                        </h3>
+                    </div>
+                    <% } %>
 
-                                                <div class="flex flex-row gap-2 ">
-                                                    <button
-                                                        class="p-1 px-2 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
-                                                        <input type="hidden" value="<%= request.Id %>">
-                                                        <input type="hidden" value="<%= request.Username %>">
-                                                        <input type="hidden" value="<%= request.First_name %>">
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <% }); %>
-                                                <% } %>
-                                </div>
+                        <p class="py-2 w-full">Suggsion for you</p>
+                        <div class="flex flex-col gap-5">
+                            <% if (suggsionId) {%>
+                                <% suggsionId.forEach(request=> {%>
+                                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                                        <button class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
+                                            <p class="size-10"><img src="<%= request.image_src %>"
+                                                    class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                    style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                            </p>
+                                            <input type="hidden" name="username" value="<%= request.Username %>" id="">
+                                            <input type="hidden" name="Id" value="<%= request.Id %>" id="">
+                                            <span class="flex flex-col gap-1">
+                                                <p class="text-sm">
+                                                    <%= request.Username %>
+                                                </p>
+                                                <p class="text-zinc-600 text-xs">
+                                                    <%=request.First_name %>
+                                                </p>
+                                            </span>
+                                        </button>
+
+                                        <div class="flex flex-row gap-2 ">
+                                            <button
+                                                class="p-1 px-10 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
+                                                <input type="hidden" value="<%= request.Id %>">
+                                                <input type="hidden" value="<%= request.Username %>">
+                                                <input type="hidden" value="<%= request.First_name %>">
+                                                <input type="hidden" value="<%= request.image_src %>">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } %>
+                        </div>
 
         </div>
     </div>
@@ -703,7 +709,7 @@
         </div>
     </div>
 
-    <div class="fixed inset-0 commbg bg-black/60 invisible flex items-center justify-center z-50 p-0 sm:p-3">
+    <div class="fixed inset-0 commbg bg-black/50 invisible flex items-center justify-center z-50 p-0 sm:p-3">
 
         <button
             class="absolute top-4 right-4 z-50 cross bg-black/60 rounded-full w-10 z-20 h-10 flex items-center justify-center">
@@ -722,7 +728,7 @@
         <div class="loadedd hidden bg-white shadow-xl w-full h-full sm:h-[95vh] sm:max-w-5xl 
                flex flex-col md:flex-row overflow-hidden">
 
-            <div class="w-full md:w-1/2 bg-black flex items-center justify-center max-h-[50vh] md:max-h-full">
+            <div class="w-full md:w-1/2 bg-black flex items-center justify-center max-h-[50vh] md:max-h-full imp">
                 <img id="postImage" src="https://i.pravatar.cc/600" alt="Post Not Found..."
                     class="w-full h-full object-contain">
             </div>

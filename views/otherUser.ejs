@@ -93,6 +93,18 @@
         background: white;
     }
 
+    @media screen and (max-width:1000px) {
+
+        .nav2 {
+            width: max-content;
+        }
+
+        .hoP {
+            left: 8%;
+            width: auto;
+        }
+    }
+
     @media screen and (max-width:500px) {
 
         .pos {
@@ -102,7 +114,6 @@
         .cross {
             position: absolute;
             right: 0%;
-            top: -6%;
             color: rgb(0, 0, 0);
             cursor: pointer;
         }
@@ -148,7 +159,7 @@
 
         .commbg {
             background-color: transparent;
-            height: 50vh;
+            height: 93vh;
         }
 
         .hoP {
@@ -169,27 +180,25 @@
 
     }
 
-    @media screen and (min-width:500px) {
+    @media screen and (max-width:1000px) {
+        .hoP {
+            left: 8%;
+            width: auto;
+        }
+    }
+
+    @media screen and (max-width:500px) {
+        .hoP {
+            width: 100%;
+            left: 0;
+        }
 
         .hhh {
             height: 90vh;
         }
 
-        .hoP {
-            width: 30%;
-        }
-
-    }
-
-    @media screen and (max-width:1000px) {
-
-        .nav2 {
-            width: max-content;
-        }
-
-        .hoP {
-            left: 8%;
-            width: auto;
+        .imp {
+            height: 50vh;
         }
     }
 
@@ -372,10 +381,10 @@
                     </svg>
                 </a>
 
-                <a href="/profile" class="flex flex-col items-center text-xs">
-                    <img src="<%= currentUser.image_src %>" alt="" class=" size-7 rounded-[50%]"
-                        style="object-fit: cover;">
-                </a>
+                <button id="notif"
+                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
+                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
+                </button>
 
                 <a href="/post/post" class="flex flex-col items-center text-xs">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -393,10 +402,10 @@
                     </svg>
                 </a>
 
-                <button id="notif"
-                    class="p-2 rounded-lg text-sm cursor-pointer  hover:bg-zinc-100 flex gap-3 items-center">
-                    <i class="fa-regular fa-heart fa-xl cursor-pointer" style="color: #000000;"></i>
-                </button>
+                <a href="/profile" class="flex flex-col items-center text-xs">
+                    <img src="<%= currentUser.image_src %>" alt="" class=" size-7 rounded-[50%]"
+                        style="object-fit: cover;">
+                </a>
 
             </nav>
 
@@ -457,12 +466,11 @@
             </aside>
 
             <main
-                class="flex-1 flex justify-center px-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-[98vh] sm:px-6 py-4">
-
-                <div class="w-full max-w-5xl bg-white rounded-xl p-4 flex flex-col gap-6 items-center">
+                class="flex-1 flex justify-center p-0 md:px-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-[98vh] sm:px-6 py-4">
+                <div class="w-full max-w-5xl bg-white rounded-xl md:p-4 flex h-[88vh] flex-col gap-6 items-center">
 
                     <div class="flex flex-col gap-3 pb-4 w-full items-center">
-                        <div class="flex flex-col sm:flex-row gap-10 my-5 items-center sm:items-start">
+                        <div class="flex flex-col sm:flex-row gap-10 my-5 items-center sm:items-start w-full">
 
                             <div class="flex flex-col items-center sm: gap-2 size-30">
                                 <img class="w-full h-full rounded-full object-cover" src="<%= data.image_src %>" alt="">
@@ -551,7 +559,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-[80%] border-t border-zinc-400 pt-3">
+                    <div class="grid grid-cols-3 gap-2 w-[97%] border-t border-zinc-400 pt-3">
                         <% userPost.forEach(p=> { %>
                             <div class="post cursor-pointer" style="aspect-ratio: 1/1.1;">
                                 <input type="hidden" name="postid" value="<%= p.Id %>">
@@ -565,144 +573,153 @@
     </div>
 
     <div
-        class="hoP flex flex-col gap-4 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
+        class="hoP flex flex-col gap-3 rounded-r-xl mainq sm:items-center hidden items-center border-l-1 border-zinc-400 w-0 text-1xl h-[97.5vh] p-4">
         <p class="w-[100%] text-2xl text-bold">Notifications</p>
         <div
             class="overflow-y-scroll addnot w-[100%] overflow-x-hidden h-[100%] scrollbar-hide-inline [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <% if (requestUser.length> 0) {%>
-                <% requestUser.forEach(request=> {%>
-                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
-                        <img src="<%= request.image_src || '' %>" class="size-12 rounded-[50%] object-cover" alt="">
-                        <span class="flex flex-col text-sm w-[50%]">
-                            <p>
-                                <%=request.Username %>
-                            </p>
-                            <p class="text-zinc-600">
-                                <%=request.First_name %>
-                            </p>
-                        </span>
-                        <div class="flex flex-row gap-2 bt3">
-                            <button
-                                class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
-                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
-                            <button
-                                class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
-                                <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
-                        </div>
-                    </div>
-                    <% }); %>
-                        <% } else{%>
-                            <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
-                                <div class="_aajr"><svg aria-label="Activity On Your Posts"
-                                        class="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="62" role="img"
-                                        viewBox="0 0 96 96" width="62">
-                                        <title>Activity On Your Posts</title>
-                                        <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor"
-                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                        </circle>
-                                        <path
-                                            d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
-                                            fill="none" stroke="currentColor" stroke-linecap="round"
-                                            stroke-linejoin="round" stroke-width="2"></path>
-                                    </svg></div>
-                                <h2 class="_aajt"><span
-                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
-                                        dir="auto"
-                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
-                                        On Your Posts</span></h2>
-                                <h3 class="_aaju"><span
-                                        class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
-                                        dir="auto"
-                                        style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
-                                        someone likes or comments on one of your posts, you'll see it here.</span>
-                                </h3>
+                <div class="flex flex-col gap-5 mb-4">
+                    <% requestUser.forEach(request=> {%>
+                        <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                            <div class="w-[50px] h-[-webkit-fill-available] rounded-[50%] overflow-hidden">
+                                <p class="size-10"><img src="<%= request.image_src %>"
+                                        class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                        style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                </p>
                             </div>
-                            <% } %>
-                                <p class="py-2 w-full">Suggsion for you</p>
-                                <div class="flex flex-col gap-3">
-                                    <% if (suggsionId) {%>
-                                        <% suggsionId.forEach(request=> {%>
-                                            <div
-                                                class="w-[100%] flex flex-row items-center items-justify-between gap-5">
-                                                <button
-                                                    class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
-                                                    <p class="size-10"><img src="<%=request.image_src%>"
-                                                            class="rounded-[50%] border-1 border-gray-400 border-solid"
-                                                            style="width: 100%; height: 100%; object-fit: cover;"
-                                                            alt="">
-                                                    </p>
-                                                    <input type="hidden" name="username" value="<%= request.Username %>"
-                                                        id="">
-                                                    <input type="hidden" name="Id" value="<%= request.Id %>" id="">
-                                                    <span class="flex flex-col gap-1">
-                                                        <p class="text-sm">
-                                                            <%= request.Username %>
-                                                        </p>
-                                                        <p class="text-zinc-600 text-xs">
-                                                            <%=request.First_name %>
-                                                        </p>
-                                                    </span>
-                                                </button>
+                            <span class="flex flex-col text-sm w-[50%]">
+                                <p>
+                                    <%=request.Username %>
+                                </p>
+                                <p class="text-zinc-600">
+                                    <%=request.First_name %>
+                                </p>
+                            </span>
+                            <div class="flex flex-row gap-2 bt3">
+                                <button
+                                    class="confirm px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Confirm
+                                    <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                                <button
+                                    class="decline px-2 py-1 border-1 border-black border-solid rounded-2xl text-xs text-sky-500 hover:text-sky-700 cursor-pointer">Decline
+                                    <input type="hidden" name="" value="<%=request.Id %>" id=""></button>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+                <% } else{%>
+                    <div class="_aajq flex flex-col pb-3 justify-center items-center w-[100%] text-center">
+                        <div class="_aajr"><svg aria-label="Activity On Your Posts" class="x1lliihq x1n2onr6 x5n08af"
+                                fill="currentColor" height="62" role="img" viewBox="0 0 96 96" width="62">
+                                <title>Activity On Your Posts</title>
+                                <circle cx="48" cy="48" fill="none" r="47" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2">
+                                </circle>
+                                <path
+                                    d="M48 34.4A13.185 13.185 0 0 0 37.473 29a12.717 12.717 0 0 0-6.72 1.939c-6.46 3.995-8.669 12.844-4.942 19.766 3.037 5.642 16.115 15.6 20.813 19.07a2.312 2.312 0 0 0 2.75 0c4.7-3.47 17.778-13.428 20.815-19.07 3.728-6.922 1.517-15.771-4.943-19.766A12.704 12.704 0 0 0 58.527 29 13.193 13.193 0 0 0 48 34.4Z"
+                                    fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg></div>
+                        <h2 class="_aajt"><span
+                                class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                dir="auto"
+                                style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">Activity
+                                On Your Posts</span></h2>
+                        <h3 class="_aaju"><span
+                                class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye xvs91rp xo1l8bm x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx"
+                                dir="auto" style="--x---base-line-clamp-line-height: 18px; --x-lineHeight: 18px;">When
+                                someone likes or comments on one of your posts, you'll see it here.</span>
+                        </h3>
+                    </div>
+                    <% } %>
 
-                                                <div class="flex flex-row gap-2 ">
-                                                    <button
-                                                        class="p-1 px-2 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
-                                                        <input type="hidden" value="<%= request.Id %>">
-                                                        <input type="hidden" value="<%= request.Username %>">
-                                                        <input type="hidden" value="<%= request.First_name %>">
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <% }); %>
-                                                <% } %>
-                                </div>
+                        <p class="py-2 w-full">Suggsion for you</p>
+                        <div class="flex flex-col gap-5">
+                            <% if (suggsionId) {%>
+                                <% suggsionId.forEach(request=> {%>
+                                    <div class="w-[100%] flex flex-row items-center items-justify-between gap-5">
+                                        <button class="cursor-pointer userOther flex gap-3 flex-row w-[80%] text-left">
+                                            <p class="size-10"><img src="<%= request.image_src %>"
+                                                    class="rounded-[50%] border-1 border-gray-400 border-solid"
+                                                    style="width: 100%; height: 100%; object-fit: cover;" alt="">
+                                            </p>
+                                            <input type="hidden" name="username" value="<%= request.Username %>" id="">
+                                            <input type="hidden" name="Id" value="<%= request.Id %>" id="">
+                                            <span class="flex flex-col gap-1">
+                                                <p class="text-sm">
+                                                    <%= request.Username %>
+                                                </p>
+                                                <p class="text-zinc-600 text-xs">
+                                                    <%=request.First_name %>
+                                                </p>
+                                            </span>
+                                        </button>
+
+                                        <div class="flex flex-row gap-2 ">
+                                            <button
+                                                class="p-1 px-10 bg-sky-500 hover:bg-sky-700 cursor-pointer rounded-lg text-white text-sm follow">Follow
+                                                <input type="hidden" value="<%= request.Id %>">
+                                                <input type="hidden" value="<%= request.Username %>">
+                                                <input type="hidden" value="<%= request.First_name %>">
+                                                <input type="hidden" value="<%= request.image_src %>">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } %>
+                        </div>
 
         </div>
     </div>
 
     <input type="hidden" value="<%= data.Id %>" id="data">
 
-    <div class="fixed inset-0 commbg bg-black/40 flex invisible justify-center items-center z-50">
-        <p class="cross"><i class="fa-solid fa-xmark fa-2xl"></i></p>
-        <div class="loddd hidden w-[60px]">
-            <svg class="loader gry" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+    <div class="fixed inset-0 commbg bg-black/60 invisible flex items-center justify-center z-50 p-0 sm:p-3">
+
+        <button
+            class="absolute top-4 right-4 z-50 cross bg-black/60 rounded-full w-10 z-20 h-10 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-white text-xl" style="color: white;"></i>
+        </button>
+
+        <div class="loddd hidden w-14 absolute z-50">
+            <svg class="loader gry" viewBox="0 0 384 384">
                 <circle class="active" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
                 </circle>
                 <circle class="track" pathLength="360" fill="transparent" stroke-width="32" cx="192" cy="192" r="176">
                 </circle>
             </svg>
         </div>
-        <div class="w-[75%] mx-auto h-[90%] bg-white loadedd hidden rounded-md flex">
 
-            <div class="w-1/2 bg-black flex items-center overflow-hidden justify-center">
-                <img src="https://i.pravatar.cc/600" id="postImage" alt="Post Not Found..."
-                    class="w-full h-full object-contain">
+        <div class="loadedd hidden bg-white shadow-xl w-full h-full sm:h-[95vh] sm:max-w-5xl 
+               flex flex-col md:flex-row overflow-hidden">
+
+            <div class="w-full md:w-1/2 bg-black flex items-center justify-center md:max-h-full imp">
+                <img id="postImage" src="https://i.pravatar.cc/600" alt="" class="w-full h-full object-contain">
             </div>
 
-            <div class="w-1/2 flex flex-col">
+            <div class="w-full md:w-1/2 flex flex-col">
 
-                <div class="flex items-center justify-between px-4 py-3 border-b">
+                <div class="flex items-center justify-between px-4 py-3 border-b sticky top-0 bg-white z-10">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.pravatar.cc/50" id="postUserImage" class="w-8 h-8 rounded-full">
-
-                        <p class="font-semibold flex items-center gap-1" id="postUsername">
-                        </p>
+                        <img id="postUserImage" src="https://i.pravatar.cc/50"
+                            class="w-8 h-8 rounded-full object-cover">
+                        <p id="postUsername" class="font-semibold text-sm truncate max-w-[160px]"></p>
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto px-4 py-3 text-sm leading-6 commentsDiv"></div>
-                <div class="likesection p-[10px]"></div>
+                <div class="commentsDiv overflow-y-scroll h-[20vh] md:h-[62vh] px-4 py-3 text-sm"></div>
 
-                <div class="px-4 py-3 flex border-1 border-solid border-zinc-300 items-center gap-2">
-                    <input type="text" class="flex-1 outline-none text-sm" id="newComment"
-                        placeholder="Add a comment...">
-                    <input type="hidden" name="postId" value="" class="postIdc">
-                    <input type="hidden" name="postId" value="" id="currentusr">
-                    <button class="text-blue-500 font-semibold hover:underline text-sm cursor-pointer"
-                        id="creatComment">
+                <div class="likesection px-4 py-2 border-t"></div>
+
+                <div class="px-3 py-2 border-t flex items-center gap-2 sticky bottom-0 bg-white">
+                    <input id="newComment" type="text" placeholder="Add a comment..."
+                        class="flex-1 outline-none text-sm bg-transparent">
+                    <input type="hidden" class="postIdc">
+                    <input type="hidden" id="currentusr">
+                    <button id="creatComment" class="text-blue-500 font-semibold text-sm hover:underline">
                         Post
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -952,7 +969,7 @@
                 buttonBar.forEach(b => {
                     span = b.querySelectorAll('span')
                 });
-                if (notf.classList.covers('hidden')) {
+                if (notf.classList.contains('hidden')) {
                     nof.classList.add('active')
                     notf.classList.remove('hidden')
                     span.forEach(element => {
