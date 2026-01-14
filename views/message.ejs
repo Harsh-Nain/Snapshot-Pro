@@ -713,44 +713,42 @@
             });
 
             let result = await response.json();
-
             if (!result.success) return;
 
             box.innerHTML = "";
-
             result.data.forEach(m => {
 
                 const isMe = Number(current.value) === m.senderId;
-
                 const files = normalizeFiles(m.url);
 
                 let filesHTML = "";
+                if (files.length > 0) {
+                    files.forEach(file => {
 
-                files.forEach(file => {
-
-                    if (file.type === "image") {
-                        filesHTML += `
+                        if (file.type === "image") {
+                            filesHTML += `
                 <img src="${file.url}"
                      class="mt-2 ${isMe ? "right" : "left"} max-w-[220px]" />
             `;
-                    }
-                    else if (file.type === "audio") {
-                        filesHTML += `
+                        }
+                        else if (file.type === "audio") {
+                            filesHTML += `
                 <audio controls class="mt-2 ${isMe ? "right" : "left"} w-[220px]">
                     <source src="${file.url}">
                 </audio>
             `;
-                    }
-                    else {
-                        filesHTML += `
+                        }
+                        else {
+                            filesHTML += `
                 <a href="${file.url}" target="_blank"
                    class="block mt-2 text-blue-600 underline">
                     📄 Download file
                 </a>
             `;
-                    }
-                });
+                        }
+                    });
 
+                }
                 let div = document.createElement("div");
                 div.className = isMe ? "text-right" : "text-left";
 
