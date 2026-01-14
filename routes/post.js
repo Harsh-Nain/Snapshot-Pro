@@ -7,7 +7,6 @@ import { editPost, edit, deletePost, postLike, postComment, addComment, getPosts
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
 
-
 const router = express.Router()
 
 const storage = new CloudinaryStorage({
@@ -46,7 +45,7 @@ router.get('/onePost', islogin, OnePost)
 router.post('/post', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), postData);
 router.post('/like', islogin, postLike)
 router.post('/delete', islogin, deletePost)
-router.post('/editPost', islogin, upload.single("post"), editPost)
+router.post('/editPost', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), editPost)
 router.post('/edit', islogin, edit)
 router.get('/postcomment', islogin, postComment)
 router.post('/addcomment', islogin, addComment)

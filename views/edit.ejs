@@ -749,7 +749,7 @@
             if (e.files[0]) showPreview(e.files[0]);
         });
 
-        fileInput.addEventListener("change", function () {
+        fileInput.addEventListener("change", function (e) {
             e.preventDefault();
             if (this.files[0]) showPreview(this.files[0]);
         });
@@ -759,7 +759,7 @@
             dropArea.classList.add("border-blue-500");
         });
 
-        dropArea.addEventListener("dragleave", () => {
+        dropArea.addEventListener("dragleave", (e) => {
             dropArea.classList.remove("border-blue-500");
         });
 
@@ -794,14 +794,14 @@
             dta.append("postname", postname.value);
             dta.append("discription", discription.value);
             dta.append("isPublic", isPublic.checked)
-            load.classList.remove('invisible');
 
+            load.classList.remove('invisible');
             let response = await fetch("/post/editPost", {
                 method: "POST",
                 body: dta
             });
-
             let data = await response.json();
+            console.log(data);
 
             if (data.success) {
                 load.classList.add('invisible');

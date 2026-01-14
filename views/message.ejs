@@ -10,6 +10,10 @@
 </head>
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     .hoP {
         position: fixed;
         left: 5%;
@@ -20,8 +24,109 @@
         background: white;
     }
 
-    .active {
-        border: 2px solid rgb(0, 255, 0);
+    .left {
+        border-radius: 10px 10px 10px 0;
+    }
+
+    .right {
+        border-radius: 10px 10px 0 10px;
+    }
+
+    .messageBox {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        border: none;
+        justify-content: center;
+        padding: 0 15px;
+        overflow: hidden;
+    }
+
+    .fileUploadWrapper {
+        width: fit-content;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #file {
+        display: none;
+    }
+
+    .fileUploadWrapper label {
+        cursor: pointer;
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .fileUploadWrapper label svg {
+        height: 18px;
+    }
+
+    .fileUploadWrapper label svg path {
+        transition: all 0.3s;
+    }
+
+    .fileUploadWrapper label svg circle {
+        transition: all 0.3s;
+    }
+
+    .fileUploadWrapper label:hover svg path {
+        stroke: #fff;
+    }
+
+    .fileUploadWrapper label:hover svg circle {
+        stroke: #fff;
+        fill: #000000;
+    }
+
+    #messageInput {
+        height: 100%;
+        background-color: transparent;
+        outline: none;
+        border: none;
+        padding-left: 10px;
+        color: white;
+    }
+
+    #messageInput:focus~#sendButton svg path,
+    #messageInput:valid~#sendButton svg path {
+        fill: #d0d0d0;
+        stroke: white;
+    }
+
+    #sendButton {
+        width: fit-content;
+        height: 100%;
+        background-color: transparent;
+        outline: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    #sendButton svg {
+        height: 18px;
+        transition: all 0.3s;
+    }
+
+    #sendButton svg path {
+        transition: all 0.3s;
+    }
+
+    #sendButton:hover svg path {
+        fill: #d6d6d6;
+        stroke: white;
     }
 </style>
 
@@ -172,24 +277,47 @@
 
             <div id="chatBox" class="hidden flex flex-col h-[80vh] bg-white">
 
-                <div id="messages" class="h-full overflow-y-auto space-y-3 px-2">
-                </div>
+                <div id="messages" class="h-full overflow-y-auto space-y-3 px-2"></div>
 
-                <div class="border-t border-gray-300 px-2 sm:px-3 py-2 flex items-center gap-2 bg-white">
+                <div class="flex flex-col border border-zinc-400 rounded-lg w-full items-center justify-center">
 
-                    <input id="msgInput" type="text" placeholder="Message..." class="flex-1 px-3 py-3 text-sm sm:text-base text-black 
-               outline-none rounded-full bg-gray-100
-               focus:bg-white focus:ring-2 focus:ring-blue-400">
+                    <div class="flex flex-wrap gap-2 h-[fit-content] showww w-[99%]"></div>
 
-                    <button onclick="sendMessage()" class="text-blue-500 font-semibold text-sm sm:text-base
-               px-3 py-2 rounded-full hover:bg-blue-50
-               active:scale-95 transition">
-                        Send
-                    </button>
+                    <div class="messageBox flex gap-1 px-2 items-end w-full">
+
+                        <div class="fileUploadWrapper">
+                            <label for="file">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
+                                    <circle stroke-width="20" stroke="#6c6c6c" fill="none" r="158.5" cy="168.5"
+                                        cx="168.5"></circle>
+                                    <path stroke-linecap="round" stroke-width="25" stroke="#6c6c6c" d="M167.759 79V259">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-width="25" stroke="#6c6c6c" d="M79 167.138H259">
+                                    </path>
+                                </svg>
+                            </label>
+                            <input type="file" id="file" name="file" multiple
+                                accept="image/*,audio/*,.pdf,.doc,.docx" />
+                        </div>
+
+                        <input id="msgInput" class="outline-none border-none w-full" placeholder="Message..."
+                            type="text" />
+
+                        <button id="sendButton" onclick="sendMessage()">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663">
+                                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="33.67"
+                                    stroke="#6c6c6c"
+                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888">
+                                </path>
+                            </svg>
+                        </button>
+
+                    </div>
                 </div>
             </div>
 
         </div>
+
         <input type="hidden" value="<%= Id %>" id="current">
     </div>
 
@@ -305,7 +433,61 @@
         const mainMOB = document.querySelector(".mainMOB");
         const mainUSE = document.querySelector(".mainUSE");
         const backaro = document.querySelector(".backaro");
+        const showww = document.querySelector(".showww");
+        const fileInput = document.getElementById("file");
+        const msgInput = document.getElementById("msgInput");
+
+        let filesToSend = [];
+
+        fileInput.addEventListener("change", function () {
+            [...this.files].forEach(file => {
+                filesToSend.push(file);
+                showPreview(file);
+            });
+            this.value = "";
+        });
+
+        function showPreview(file) {
+            const wrapper = document.createElement("div");
+            wrapper.className =
+                "relative w-16 h-16 rounded-lg overflow-hidden border imgs bg-gray-100 m-1";
+
+            const remove = document.createElement("button");
+            remove.innerHTML = "✕";
+            remove.className =
+                "absolute top-1 right-1 bg-black/70 text-white cursor-pointer ccc text-xs w-5 h-5 rounded-full flex items-center justify-center";
+            remove.onclick = () => {
+                filesToSend = filesToSend.filter(f => f !== file);
+                wrapper.remove();
+            };
+
+            if (file.type.startsWith("image/")) {
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.className = "w-full h-full object-cover";
+                wrapper.appendChild(img);
+            }
+
+            else if (file.type.startsWith("audio/")) {
+                wrapper.classList.add("flex", "items-center", "justify-center");
+                wrapper.innerHTML = `
+            <i class="fa-solid fa-music text-xl text-gray-600"></i>`;
+            }
+
+            else {
+                wrapper.classList.add("flex", "items-center", "justify-center");
+                wrapper.innerHTML = `
+            <i class="fa-solid fa-file text-xl text-gray-600"></i>`;
+            }
+
+            wrapper.appendChild(remove);
+            showww.appendChild(wrapper);
+        }
+
         let socket;
+        if (window.innerWidth > 500) {
+            backaro.style.display = 'none'
+        }
 
         function ago(t) {
             const diffMs = Date.now() - new Date(t);
@@ -327,23 +509,66 @@
             socket.on("connect", () => console.log("Connected:", socket.id));
 
             socket.on("message", (data) => {
-                let div = document.createElement("div");
-                div.className = "text-left";
-                div.innerHTML = `
-                    <div class="inline-block max-w-[70%]">
-                        <span class="px-4 py-2 inline-block rounded-2xl bg-gray-300 text-black">
-                            ${data.message}
-                        </span>
-                        <p class="text-gray-500 text-xs mt-1">${ago(new Date())}</p>
-                    </div>
-                `;
-                box.appendChild(div);
-                box.scrollTop = box.scrollHeight;
+                appendIncomingMessage(data)
             });
 
             updateUsers()
 
         });
+
+        function appendIncomingMessage(data) {
+
+            let filesHTML = "";
+
+            if (Array.isArray(data.files)) {
+                data.files.forEach(file => {
+
+                    if (file.type === "image") {
+                        filesHTML += `
+                    <img src="${file.url}"
+                         class="mt-2 left max-w-[220px]" />
+                `;
+                    }
+                    else if (file.type === "audio") {
+                        filesHTML += `
+                    <audio controls class="mt-2 left w-[220px]">
+                        <source src="${file.url}">
+                    </audio>
+                `;
+                    }
+                    else {
+                        filesHTML += `
+                    <a href="${file.url}" target="_blank"
+                       class="block mt-2 text-blue-600 underline">
+                        📄 ${file.name || "Download file"}
+                    </a>
+                `;
+                    }
+                });
+            }
+
+            const div = document.createElement("div");
+            div.className = "text-left";
+
+            div.innerHTML = `
+        <div class="inline-block max-w-[70%]">
+            ${data.message ? `
+                <span class="px-3 py-2 inline-block left bg-gray-300 text-black">
+                    ${data.message}
+                </span>
+            ` : ""}
+
+            ${filesHTML}
+
+            <p class="text-gray-500 text-xs mt-1">
+                ${Msago(data.created_at)}
+            </p>
+        </div>
+    `;
+
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
 
         function usrList(mess) {
             userList.innerHTML = ""
@@ -394,76 +619,158 @@
         })
 
         async function sendMessage() {
-            if (input.value.trim() === "") return;
 
-            socket.emit("message", { to: Id.value, message: input.value });
-            let response = await fetch("/message/saveMessage", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: input.value,
-                    reciverId: Id.value
-                })
+            if (!input.value.trim() && filesToSend.length === 0) return;
+
+            const messageText = input.value;
+            input.value = "";
+
+            let cc = document.querySelectorAll('.ccc')
+            let imgs = document.querySelectorAll('.imgs')
+            cc.forEach(c => c.remove());
+
+            const formData = new FormData();
+            formData.append("message", messageText);
+            formData.append("reciverId", Id.value);
+
+            filesToSend.forEach(file => {
+                formData.append("files", file);
             });
 
-            let result = await response.json();
+            const response = await fetch("/message/saveMessage", {
+                method: "POST",
+                body: formData
+            });
 
-            if (result.success) {
-                let div = document.createElement("div");
-                div.className = "text-right";
+            const result = await response.json();
+            if (!result.success) throw new Error("Upload failed");
 
-                div.innerHTML = `
-                    <div class="inline-block max-w-[70%]">
-                        <span class="px-4 py-2 inline-block rounded-2xl bg-blue-500 text-white">
-                            ${input.value}
-                        </span>
-                        <p class="text-gray-500 text-xs mt-1">${ago(new Date())}</p>
-                    </div>
-                `;
+            loadingDiv.remove();
 
-                input.value = "";
-                box.appendChild(div);
-                updateUsers()
-                box.scrollTop = box.scrollHeight;
+            renderOwnMessage(result.data);
+            showww.innerHTML = "";
+
+            socket.emit("message", {
+                to: Id.value,
+                message: result.data.message,
+                files: result.data.files,
+                created_at: result.data.created_at,
+                senderId: result.data.senderId
+            });
+
+            filesToSend = [];
+            updateUsers();
+        }
+
+        function Msago(t) {
+            const date = new Date(t);
+            const diffMs = Date.now() - date;
+            const s = Math.floor(diffMs / 1000);
+            const m = Math.floor(s / 60);
+            const h = Math.floor(m / 60);
+            const d = Math.floor(h / 24);
+
+            if (s < 7) return "Just now";
+            if (s < 60) return `${s} sec ago`;
+            if (m < 60) return `${m} min ago`;
+            if (h < 24) return date.toLocaleString(undefined, {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+            if (d === 1) return "Yesterday";
+
+            return date.toLocaleString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            });
+        }
+
+        function normalizeFiles(files) {
+            if (!files) return [];
+
+            if (Array.isArray(files)) return files;
+
+            if (typeof files === "string") {
+                try {
+                    return JSON.parse(files);
+                } catch {
+                    return [];
+                }
             }
+
+            return [];
         }
 
         async function showMessage(id) {
 
-            let response = await fetch(`/message/showMessage?Id=${id}`, { method: "POST" });
+            let response = await fetch(`/message/showMessage?Id=${id}`, {
+                method: "POST"
+            });
+
             let result = await response.json();
-            if (result.success) {
-                box.innerHTML = "";
-                result.data.forEach(m => {
-                    let isMe = (id == m.receiverId);
 
-                    let div = document.createElement("div");
-                    div.className = isMe ? "text-right" : "text-left";
+            if (!result.success) return;
 
-                    div.innerHTML = `
-                        <div class="inline-block max-w-[70%]">
-                            <span class="px-2 py-1 inline-block rounded-lg
-                                ${isMe ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}">
-                                ${m.message}
-                            </span>
-                            <p class="text-gray-500 text-xs mt-1">
-                                ${ago(m.created_at)}
-                            </p>
-                        </div>
-                    `;
-                    box.appendChild(div);
+            box.innerHTML = "";
+
+            result.data.forEach(m => {
+
+                const isMe = Number(current.value) === m.senderId;
+
+                const files = normalizeFiles(m.url);
+
+                let filesHTML = "";
+
+                files.forEach(file => {
+
+                    if (file.type === "image") {
+                        filesHTML += `
+                <img src="${file.url}"
+                     class="mt-2 ${isMe ? "right" : "left"} max-w-[220px]" />
+            `;
+                    }
+                    else if (file.type === "audio") {
+                        filesHTML += `
+                <audio controls class="mt-2 ${isMe ? "right" : "left"} w-[220px]">
+                    <source src="${file.url}">
+                </audio>
+            `;
+                    }
+                    else {
+                        filesHTML += `
+                <a href="${file.url}" target="_blank"
+                   class="block mt-2 text-blue-600 underline">
+                    📄 Download file
+                </a>
+            `;
+                    }
                 });
 
-                box.scrollTop = box.scrollHeight;
-            }
-        }
+                let div = document.createElement("div");
+                div.className = isMe ? "text-right" : "text-left";
 
-        document.getElementById("msgInput").addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+                div.innerHTML = `
+        <div class="inline-block max-w-[70%]">
+            ${m.message ? `
+            <span class="px-3 py-2 inline-block rounded-2xl
+                ${isMe ? "bg-blue-500 text-white right" : "bg-gray-300 text-black left"}">
+                ${m.message}
+            </span>` : ""}
+
+            ${filesHTML}
+
+            <p class="text-gray-500 text-xs mt-1">
+                ${Msago(m.created_at)}
+            </p>
+        </div>
+    `;
+                box.appendChild(div);
+            });
+
+            box.scrollTop = box.scrollHeight;
+        }
 
         async function updateUsers() {
             conversation = []
@@ -494,6 +801,57 @@
                 usrList();
             });
         }
+
+        function renderOwnMessage(m) {
+            let filesHTML = "";
+
+            if (Array.isArray(m.files)) {
+                m.files.forEach(file => {
+                    if (file.type === "image") {
+                        filesHTML += `
+                    <img src="${file.url}"
+                         class="mt-2 right max-w-[220px]" />
+                `;
+                    }
+                    else if (file.type === "audio") {
+                        filesHTML += `
+                    <audio controls class="mt-2">
+                        <source src="${file.url}">
+                    </audio>
+                `;
+                    }
+                    else {
+                        filesHTML += `
+                    <a href="${file.url}" target="_blank"
+                       class="block mt-2 text-white underline">
+                        📄 ${file.name || "Download file"}
+                    </a>
+                `;
+                    }
+                });
+            }
+
+            const div = document.createElement("div");
+            div.className = "text-right";
+
+            div.innerHTML = `
+        <div class="inline-block max-w-[70%]">
+            ${m.message ? `
+                <span class="px-3 py-2 inline-block right bg-blue-500 text-white">
+                    ${m.message}
+                </span>
+            ` : ""}
+            ${filesHTML}
+            <p class="text-gray-500 text-xs mt-1">
+                ${Msago(m.created_at)}
+            </p>
+        </div>
+    `;
+
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
     </script>
 
 </body>

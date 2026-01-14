@@ -1,7 +1,6 @@
 import { db } from "../db/index.js";
 import { messages, users } from "../db/schems.js";
-import { Follower } from "../config/funstions.js";
-import { eq, or, and, asc, sql, desc } from "drizzle-orm";
+import { eq, or, and, asc, sql } from "drizzle-orm";
 
 export const Message = async (Id) => {
     const userId = Number(Id);
@@ -56,7 +55,6 @@ export const Message = async (Id) => {
         )
         .orderBy(asc(messages.created_at));
 
-        console.log(data)
     return data;
 };
 
@@ -64,19 +62,35 @@ export const SaveMessage = async (req, res) => {
     const { Id } = req.user;
     const { message, reciverId } = req.body;
 
+    const uploadedFiles = req.files || [];
+
+    const files = uploadedFiles.map(file => ({
+        url: file.path,
+        type: file.mimetype.split("/")[0],
+        name: file.originalname
+    }));
+
     await db.insert(messages).values({
         senderId: Number(Id),
         receiverId: Number(reciverId),
-        message: message.trim(),
+        message: message?.trim() || null,
+        url: files.length ? files : null
     });
 
-    res.json({ success: true });
+    res.json({
+        success: true,
+        data: {
+            senderId: Number(Id),
+            message: message?.trim() || null,
+            files,
+            created_at: new Date()
+        }
+    });
 };
 
 export const ShowMessage = async (req, res) => {
     const { Id } = req.user;
     const otherUserId = Number(req.query.Id);
-    console.log(Id, otherUserId)
 
     const data = await db
         .select()

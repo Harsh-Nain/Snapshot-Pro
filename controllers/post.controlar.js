@@ -49,7 +49,7 @@ export const edit = async (req, res) => {
 
 export const editPost = async (req, res) => {
     let { id, postname, discription, isPublic } = req.body;
-    isPublic = isPublic === undefined ? false : true;
+    isPublic = isPublic === undefined ? true : false;
 
     const updateData = {
         postName: postname,
@@ -58,8 +58,14 @@ export const editPost = async (req, res) => {
         created_at: new Date(),
     };
 
-    if (req.file) {
-        updateData.image_url = req.file.path;
+    if (req.files.post) {
+        const image = req.files.post[0];
+        updateData.image_url = image;
+    }
+    const audio = req.files.song ? req.files.song[0] : null;
+
+    if (audio) {
+        updateData.songUrl = audio.path;
     }
 
     await db

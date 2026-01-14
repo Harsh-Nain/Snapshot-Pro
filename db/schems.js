@@ -1,4 +1,4 @@
-import { mysqlTable, int, varchar, text, timestamp, boolean, uniqueIndex } from "drizzle-orm/mysql-core";
+import { mysqlTable, int, varchar, text, timestamp, boolean, uniqueIndex, json } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable(
     "user",
@@ -63,5 +63,6 @@ export const messages = mysqlTable("message", {
     senderId: int("senderId").notNull(),
     receiverId: int("receiverId").notNull(),
     message: text("message").notNull(),
+    url: json("url"),
     created_at: timestamp("created_at").defaultNow(),
 });
