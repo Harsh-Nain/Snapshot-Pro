@@ -73,16 +73,16 @@ export const SaveMessage = async (req, res) => {
     await db.insert(messages).values({
         senderId: Number(Id),
         receiverId: Number(reciverId),
-        message: message?.trim() || null,
-        url: files.length ? files : null
+        message: message?.trim() || '',
+        url: files.length ? files : ''
     });
 
     res.json({
         success: true,
         data: {
             senderId: Number(Id),
-            message: message?.trim() || null,
-            files,
+            message: message?.trim() || '',
+            files: files || '',
             created_at: new Date()
         }
     });

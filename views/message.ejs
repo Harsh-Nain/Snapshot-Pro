@@ -450,7 +450,15 @@
         function showPreview(file) {
             const wrapper = document.createElement("div");
             wrapper.className =
-                "relative w-16 h-16 rounded-lg overflow-hidden border imgs bg-gray-100 m-1";
+                "relative w-16 h-16 rounded-lg overflow-hidden border bg-gray-100 m-1";
+
+            const loading = document.createElement("div");
+            loading.className =
+                "absolute inset-0 bg-black/30 flex items-center justify-center hidden loddd";
+            loading.innerHTML = `
+        <div class="w-4 h-4 border-2 border-white border-t-transparent
+                    rounded-full animate-spin"></div>
+    `;
 
             const remove = document.createElement("button");
             remove.innerHTML = "✕";
@@ -467,19 +475,16 @@
                 img.className = "w-full h-full object-cover";
                 wrapper.appendChild(img);
             }
-
             else if (file.type.startsWith("audio/")) {
                 wrapper.classList.add("flex", "items-center", "justify-center");
-                wrapper.innerHTML = `
-            <i class="fa-solid fa-music text-xl text-gray-600"></i>`;
+                wrapper.innerHTML = `<i class="fa-solid fa-music text-xl text-gray-600"></i>`;
             }
-
             else {
                 wrapper.classList.add("flex", "items-center", "justify-center");
-                wrapper.innerHTML = `
-            <i class="fa-solid fa-file text-xl text-gray-600"></i>`;
+                wrapper.innerHTML = `<i class="fa-solid fa-file text-xl text-gray-600"></i>`;
             }
 
+            wrapper.appendChild(loading);
             wrapper.appendChild(remove);
             showww.appendChild(wrapper);
         }
@@ -619,15 +624,15 @@
         })
 
         async function sendMessage() {
-
             if (!input.value.trim() && filesToSend.length === 0) return;
 
-            const messageText = input.value;
+            const messageText = input.value || '';
             input.value = "";
 
             let cc = document.querySelectorAll('.ccc')
-            let imgs = document.querySelectorAll('.imgs')
+            let loddd = document.querySelectorAll('.loddd')
             cc.forEach(c => c.remove());
+            loddd.forEach(c => c.classList.remove('hidden'));
 
             const formData = new FormData();
             formData.append("message", messageText);
@@ -636,6 +641,7 @@
             filesToSend.forEach(file => {
                 formData.append("files", file);
             });
+            filesToSend = [];
 
             const response = await fetch("/message/saveMessage", {
                 method: "POST",
@@ -645,20 +651,17 @@
             const result = await response.json();
             if (!result.success) throw new Error("Upload failed");
 
-            loadingDiv.remove();
-
             renderOwnMessage(result.data);
             showww.innerHTML = "";
 
             socket.emit("message", {
                 to: Id.value,
-                message: result.data.message,
-                files: result.data.files,
+                message: result.data.message || '',
+                files: result.data.files || '',
                 created_at: result.data.created_at,
                 senderId: result.data.senderId
             });
 
-            filesToSend = [];
             updateUsers();
         }
 
@@ -847,7 +850,6 @@
             </p>
         </div>
     `;
-
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
