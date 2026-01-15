@@ -34,6 +34,7 @@ export const Message = async (Id) => {
             image_src: users.image_src,
             First_name: users.First_name,
             lastMessage: messages.message,
+            file: messages.url,
             created_at: messages.created_at,
         })
         .from(messages)
@@ -107,7 +108,10 @@ export const ShowMessage = async (req, res) => {
                 )
             )
         )
-        .orderBy(asc(messages.created_at));
+        .orderBy(
+            asc(messages.created_at),
+            asc(messages.Id)
+        );
 
     res.json({ success: true, data });
 };

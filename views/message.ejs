@@ -128,6 +128,10 @@
         fill: #d6d6d6;
         stroke: white;
     }
+
+    .active {
+        border: 3px solid rgb(0, 255, 0);
+    }
 </style>
 
 <body class="text-black overflow-hidden">
@@ -224,14 +228,14 @@
 
         </aside>
 
-        <div class="w-full mainUSE md:w-[30%] border-r border-gray-300 flex flex-col bg-white">
+        <div class="w-full mainUSE md:w-[30%] border-r border-[#f3f3f3] flex flex-col bg-white">
 
             <div class="flex justify-between items-center px-5 py-4 text-lg font-bold text-black">
                 <%= user.Username %>
             </div>
 
             <div class="px-4">
-                <input class="w-full px-4 py-2 rounded-full bg-gray-100 border border-gray-300 outline-none text-black"
+                <input class="w-full px-4 py-2 rounded-full bg-gray-100 border border-[#f3f3f3] outline-none text-black"
                     placeholder="Search">
             </div>
 
@@ -252,7 +256,7 @@
         </div>
 
         <div class="flex-1 mainMOB hidden md:flex flex-col bg-white">
-            <div id="chatTop" class="hidden p-4 border-b border-gray-300 justify-between items-center bg-white">
+            <div id="chatTop" class="hidden p-4 border-b border-[#f3f3f3] justify-between items-center bg-white">
                 <div class="flex items-center gap-3">
                     <i class="fa-solid backaro fa-arrow-left-long fa-2xl" style="color: #000000;"></i>
                     <img id="topImg" class="w-10 h-10 rounded-full object-cover">
@@ -266,24 +270,24 @@
 
             <div id="welcome" class=" flex flex-col justify-center items-center h-full text-center">
                 <div class="overflow-hidden h-20 w-20">
-                    <img class="w-full h-full rounded-full mb-4 bg-gray-300"
+                    <img class="w-full h-full rounded-full mb-4 bg-[#f3f3f3]"
                         src="https://res.cloudinary.com/ddiyrbync/image/upload/v1767356520/ChatGPT_Image_Jan_2_2026_05_50_04_PM_xpxaqz.jpg" />
                 </div>
                 <h1 class="text-2xl font-bold text-black">Snapshot</h1>
                 <p class="text-gray-500">Select a conversation to start chatting</p>
             </div>
 
-            <div id="chatBox" class="hidden flex flex-col h-[76vh] bg-white">
+            <div id="chatBox" class="hidden flex flex-col h-[76vh] bg-white px-2">
 
                 <div id="messages" class="h-full overflow-y-auto space-y-3 px-2"></div>
 
                 <div class="flex flex-col border border-zinc-400 rounded-lg w-full items-center justify-center">
 
-                    <div class="flex flex-wrap gap-2 h-[fit-content] showww w-[99%]"></div>
+                    <div class="flex flex-wrap gap-2 h-[fit-content] showww w-[99%] keyss"></div>
 
                     <div class="messageBox flex gap-1 px-2 items-end w-full">
 
-                        <div class="fileUploadWrapper">
+                        <div class="fileUploadWrapper keyss">
                             <label for="file">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
                                     <circle stroke-width="20" stroke="#6c6c6c" fill="none" r="158.5" cy="168.5"
@@ -298,7 +302,7 @@
                                 accept="image/*,audio/*,.pdf,.doc,.docx" />
                         </div>
 
-                        <input id="msgInput" class="outline-none border-none w-full" placeholder="Message..."
+                        <input id="msgInput" class="keyss outline-none border-none w-full" placeholder="Message..."
                             type="text" />
 
                         <button id="sendButton" onclick="sendMessage()">
@@ -434,6 +438,7 @@
         const showww = document.querySelector(".showww");
         const fileInput = document.getElementById("file");
         const msgInput = document.getElementById("msgInput");
+        const keyss = document.querySelectorAll(".keyss");
 
         let filesToSend = [];
 
@@ -454,9 +459,8 @@
             loading.className =
                 "absolute inset-0 bg-black/30 flex items-center justify-center hidden loddd";
             loading.innerHTML = `
-        <div class="w-4 h-4 border-2 border-white border-t-transparent
-                    rounded-full animate-spin"></div>
-    `;
+                <div class="w-4 h-4 border-2 border-white border-t-transparent
+                    rounded-full animate-spin"></div>`;
 
             const remove = document.createElement("button");
             remove.innerHTML = "✕";
@@ -504,21 +508,6 @@
             return `${d} day ago`;
         }
 
-        window.addEventListener('load', async () => {
-            socket = io({
-                auth: { userId: current.value }
-            });
-
-            socket.on("connect", () => console.log("Connected:", socket.id));
-
-            socket.on("message", (data) => {
-                appendIncomingMessage(data)
-            });
-
-            updateUsers()
-
-        });
-
         function appendIncomingMessage(data) {
 
             let filesHTML = "";
@@ -556,15 +545,15 @@
             div.innerHTML = `
         <div class="inline-block max-w-[70%]">
             ${data.message ? `
-                <span class="px-3 py-2 inline-block left bg-gray-300 text-black">
+                <span class="px-3 py-2 inline-block left bg-[#f3f3f3] text-black">
                     ${data.message}
                 </span>
             ` : ""}
 
             ${filesHTML}
 
-            <p class="text-gray-500 text-xs mt-1">
-                ${Msago(data.created_at)}
+            <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">
+            ${Msago(data.created_at)}
             </p>
         </div>
     `;
@@ -573,29 +562,58 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        function usrList(mess) {
-            userList.innerHTML = ""
-            conversation.forEach(mess => {
-                let div = document.createElement("div");
-                div.classList.add("flex", "items-center", "gap-3", "px-4", "py-3", "hover:bg-gray-200", "cursor-pointer");
+        function lastMessagePreview(mess) {
+            if (mess.lastMessage) return mess.lastMessage;
 
-                div.addEventListener("click", () => {
-                    openChat(`${mess.Id}`, `${mess.First_name}`, `${mess.Username}`, `${mess.image_src}`);
-                });
+            if (!Array.isArray(mess.file) || mess.file.length === 0) return "";
+
+            const type = mess.file[0].type;
+            if (type === "image") return "📷 Photo";
+            if (type === "audio") return "🎵 Audio";
+            return "📄 Document";
+        }
+
+        function usrList() {
+            userList.innerHTML = "";
+
+            const sortedConversation = [...conversation].sort((a, b) => {
+                if (a.isActive === b.isActive) {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                }
+                return b.isActive - a.isActive;
+            });
+
+            sortedConversation.forEach(mess => {
+                const div = document.createElement("div");
+
+                div.className = "flex items-center justify-between gap-3 px-4 py-3 hover:bg-gray-200 cursor-pointer";
+
+                div.addEventListener("click", () => { openChat(`${mess.Id}`, `${mess.First_name}`, `${mess.Username}`, `${mess.image_src}`); });
 
                 div.innerHTML = `
-                    <img src="${mess.image_src}" class="w-12 h-12 rounded-full object-cover ${mess.isActive ? 'active' : ''}">
-                    <div>
-                    <p class="font-semibold text-black">
-                        ${mess.Username}
-                        </p>
-                        <p class="text-gray-600 text-sm">
-                            ${mess.lastMessage}
-                             <span class="text-right text-zinc-500 text-[10px]">${ago(mess.created_at)}</span>
-                            </p>
-                            </div>`
-                userList.prepend(div)
-            })
+            <div class="flex gap-3 items-center">
+                <div class="relative">
+                    <img src="${mess.image_src}" class="w-12 h-12 rounded-full object-cover">
+                    ${mess.isActive ? ` <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.8)]"></span>` : ''}
+                </div>
+
+                <div class="flex flex-col">
+                    <p class="font-semibold text-black">${mess.Username}</p>
+                    <p class="text-gray-600 text-sm truncate max-w-[160px]">
+                        ${lastMessagePreview(mess)}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-end text-xs text-zinc-500">
+                <span class="msg-time"
+                      data-time="${mess.created_at}">
+                      ${ago(mess.created_at)}
+                </span>
+            </div>`;
+
+                userList.appendChild(div);
+            });
         }
 
         function openChat(id, name, username, img) {
@@ -610,8 +628,8 @@
             document.getElementById("chatBox").classList.remove("hidden");
             document.getElementById("chatTop").classList.remove("hidden");
 
-            document.getElementById("topName").innerText = name;
-            document.getElementById("topUser").innerText = username;
+            document.getElementById("topUser").innerText = name;
+            document.getElementById("topName").innerText = username;
             Id.value = id;
             document.getElementById("topImg").src = img;
         }
@@ -705,6 +723,7 @@
         }
 
         async function showMessage(id) {
+            box.innerHTML = ''
 
             let response = await fetch(`/message/showMessage?Id=${id}`, {
                 method: "POST"
@@ -731,7 +750,7 @@
                         }
                         else if (file.type === "audio") {
                             filesHTML += `
-                <audio controls class="mt-2 ${isMe ? "right" : "left"} w-[220px]">
+                <audio controls class="bg-[#f3f3f3] ${isMe ? "right" : "left"}">
                     <source src="${file.url}">
                 </audio>
             `;
@@ -751,20 +770,19 @@
                 div.className = isMe ? "text-right" : "text-left";
 
                 div.innerHTML = `
-        <div class="inline-block max-w-[70%]">
-            ${m.message ? `
-            <span class="px-3 py-2 inline-block rounded-2xl
-                ${isMe ? "bg-blue-500 text-white right" : "bg-gray-300 text-black left"}">
-                ${m.message}
-            </span>` : ""}
+                <div class="inline-block max-w-[70%]">
+                    <div class="my-1">${filesHTML}</div>
 
-            ${filesHTML}
+                        ${m.message ? `
+                    <span class="px-3 py-2 inline-block rounded-2xl
+                        ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}">
+                        ${m.message}
+                    </span>` : ""}
 
-            <p class="text-gray-500 text-xs mt-1">
-                ${Msago(m.created_at)}
-            </p>
-        </div>
-    `;
+                    <p class="msg-time text-gray-500 text-xs" data-time="${m.created_at}">
+                    ${Msago(m.created_at)}
+                    </p>
+                </div>`;
                 box.appendChild(div);
             });
 
@@ -789,16 +807,14 @@
 
             socket.on("online:list", ({ onlineUsers }) => {
                 const myId = Number(current.value);
+
                 conversation.forEach(user => {
-                    if (onlineUsers.includes(String(user.Id))) {
-                        user.isActive = true;
-                    }
-                    if (user.Id === myId) {
-                        user.isActive = false;
-                    }
+                    user.isActive = onlineUsers.includes(String(user.Id)) && user.Id !== myId;
                 });
+
                 usrList();
             });
+
         }
 
         function renderOwnMessage(m) {
@@ -841,14 +857,56 @@
                 </span>
             ` : ""}
             ${filesHTML}
-            <p class="text-gray-500 text-xs mt-1">
-                ${Msago(m.created_at)}
+            <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">
+            ${Msago(m.created_at)}
             </p>
         </div>
     `;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
+
+
+        window.addEventListener('load', async () => {
+            socket = io({
+                auth: { userId: current.value }
+            });
+
+            socket.on("connect", () => console.log("Connected:", socket.id));
+
+            socket.on("message", (data) => {
+                appendIncomingMessage(data)
+            });
+
+            updateUsers()
+
+        });
+
+
+        setInterval(() => {
+            document.querySelectorAll(".timeo").forEach(el => {
+                const time = el.getAttribute("data-time");
+                if (time) {
+                    el.innerText = ago(time);
+                }
+            })
+            document.querySelectorAll(".msg-time").forEach(el => {
+                const time = el.getAttribute("data-time");
+                if (time) {
+                    el.innerText = Msago(time);
+                }
+            });
+        }, 30000);
+
+        keyss.forEach(keys => {
+            keys.addEventListener('keydown', (e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    console.log('ok');
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
 
     </script>
 
