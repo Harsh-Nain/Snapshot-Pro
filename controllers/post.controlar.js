@@ -47,7 +47,7 @@ export const edit = async (req, res) => {
     res.render("edit", { editpost: post, username, requestUser, suggsionId, });
 };
 
-export const editPost = async (req, res) => {
+export const EditPost = async (req, res) => {
     let { id, postname, discription, isPublic } = req.body;
     isPublic = isPublic === undefined ? true : false;
 
@@ -58,10 +58,10 @@ export const editPost = async (req, res) => {
         created_at: new Date(),
     };
 
-    if (req.files.post) {
-        const image = req.files.post[0];
-        updateData.image_url = image;
+    if (req.files?.post?.length) {
+        updateData.image_url = req.files.post[0].path;
     }
+
     const audio = req.files.song ? req.files.song[0] : null;
 
     if (audio) {

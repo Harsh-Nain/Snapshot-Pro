@@ -3,7 +3,7 @@ import multer from "multer"
 import { islogin } from "../middleware/islogin.js"
 import { RequestUser, SuggsionId } from "../config/funstions.js"
 import { postData } from "../controllers/post.controlar.js"
-import { editPost, edit, deletePost, postLike, postComment, addComment, getPosts, OnePost } from "../controllers/post.controlar.js"
+import { EditPost, edit, deletePost, postLike, postComment, addComment, getPosts, OnePost } from "../controllers/post.controlar.js"
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
 
@@ -12,12 +12,20 @@ const router = express.Router()
 const storage = new CloudinaryStorage({
     cloudinary,
     params: async (req, file) => {
-        let folder = "posts/images";
-        let resource_type = "image";
+        let folder;
+        let resource_type;
 
-        if (file.mimetype.startsWith("audio")) {
+        if (file.mimetype.startsWith("image/")) {
+            folder = "posts/images";
+            resource_type = "image";
+        }
+        else if (file.mimetype.startsWith("audio/")) {
             folder = "posts/audio";
             resource_type = "video";
+        }
+        else {
+            folder = "posts/documents";
+            resource_type = "raw";
         }
 
         return {
@@ -41,11 +49,14 @@ router.get("/posts", islogin, async (req, res) => {
 });
 
 const upload = multer({ storage });
+router.post('/editPost', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), async (req, res) => {
+    let rs = await EditPost(req, res)
+    res.json(rs)
+})
 router.get('/onePost', islogin, OnePost)
 router.post('/post', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), postData);
 router.post('/like', islogin, postLike)
 router.post('/delete', islogin, deletePost)
-router.post('/editPost', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), editPost)
 router.post('/edit', islogin, edit)
 router.get('/postcomment', islogin, postComment)
 router.post('/addcomment', islogin, addComment)
