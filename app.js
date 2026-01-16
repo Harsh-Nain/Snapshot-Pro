@@ -81,8 +81,6 @@ io.on("connection", (socket) => {
         onlineUsers: Object.keys(onlineUsers)
     });
 
-    socket.on("disconnect", () => {
-    });
 });
 
 if (process.env.MODE == "PROD") {
