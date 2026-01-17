@@ -7,7 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
-import { connectDB } from "./mongodb/mdb.js";
+// import { connectDB } from "./mongodb/mdb.js";
 
 import authRouter from "./routes/auth.js";
 import postRoute from "./routes/post.js";
@@ -37,10 +37,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-(async () => {
-    const db = await connectDB();
-    console.log("Collections:", await db.listCollections().toArray());
-})();
+// (async () => {
+//     const db = await connectDB();
+// })();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));

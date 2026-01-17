@@ -543,20 +543,18 @@
             div.className = "text-left";
 
             div.innerHTML = `
-        <div class="inline-block max-w-[70%]">
-            ${data.message ? `
-                <span class="px-3 py-2 inline-block left bg-[#f3f3f3] text-black">
-                    ${data.message}
-                </span>
-            ` : ""}
+    <div class="group relative inline-block max-w-[70%]">
 
-            ${filesHTML}
+    <!-- Files -->
+      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
 
-            <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">
-            ${Msago(data.created_at)}
-            </p>
-        </div>
-    `;
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
+           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
+    
+      <!-- Time -->
+      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+ 
+    </div>`;
 
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
@@ -721,20 +719,6 @@
             return [];
         }
 
-        function toggleMenu(e) {
-            e.stopPropagation();
-
-            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
-
-            const menu = e.currentTarget.nextElementSibling;
-            menu.classList.toggle("hidden");
-            document.querySelectorAll(".menu").forEach(m => m.classList.remove("hidden"));
-        }
-
-        document.addEventListener("click", () => {
-            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
-        });
-
         async function unsendMessage(id) {
             const res = await fetch(`/message/unSend${id}`, {
                 method: "DELETE",
@@ -753,9 +737,26 @@
             }
         }
 
+        function toggleMenu(btn) {
+            const menu = btn.parentElement.querySelector(".menu");
+            if (!menu) return;
+
+            document.querySelectorAll(".menu").forEach(m => {
+                if (m !== menu && !m.classList.contains("invisible")) {
+                    m.classList.add("opacity-0", "invisible", "scale-95");
+                }
+            });
+
+            menu.classList.toggle("opacity-0");
+            menu.classList.toggle("invisible");
+            menu.classList.toggle("scale-95");
+        }
 
         function copyMessage(text) {
             navigator.clipboard.writeText(text);
+            document.querySelectorAll(".menu").forEach(m => {
+                m.classList.add("opacity-0", "invisible", "scale-95");
+            })
         }
 
         async function showMessage(id) {
@@ -802,46 +803,49 @@
                         }
                     });
                 }
-
                 let div = document.createElement("div");
-                div.className = isMe ? "text-right message" : "text-left message";
-                div.dataset.id = m._id
+                div.className = `${isMe ? "text-right" : "text-left"} message`;
+                div.dataset.id = m.Id;
+
+                const time = new Date(m.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
 
                 div.innerHTML = `
-               <div class="group relative inline-block max-w-[70%]">
+    <div class="group relative inline-block max-w-[70%]">
 
-              ${isMe ? `
-                    <div class="absolute bottom-[45%] left-[-59px] pt-2 px-1 group-hover:flex items-center gap-2 text-gray-500">
+    <!-- Files -->
+      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
 
-                     <div class="relative">
-                    <button onclick="toggleMenu(event)" class="hover:text-black cursor-pointer"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      ${isMe ? `
+      <!-- Three dots -->
+      <button class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
 
-                    <div class="menu absolute right-5 bg-white rounded-xl shadow-lg text-sm min-w-[140px] z-50">
-                    <button onclick="unsendMessage('${m._id}')" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 rounded-t-xl">Unsend</button>
-                    <button onclick="copyMessage('${m.message || ""}')"class="w-full text-left px-4 py-2 hover:bg-gray-100">Copy</button>
-                    <div class="px-4 py-2 text-gray-500 text-center text-xs border-t">
-                    ${new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </div>
-              </div>
-            </div>
+      <!-- Menu -->
+      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        
+        <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
+        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>` :
 
-            <button class="hover:text-black cursor-pointer"><i class="fa-solid fa-reply"></i></button>
-            <button class="hover:text-black cursor-pointer"><i class="fa-regular fa-face-smile"></i></button></div>` : `<div class="absolute bottom-[45%] pt-2 px-1 right-[-40px] hidden group-hover:flex items-center gap-2 text-gray-500">
-            <button class="hover:text-black cursor-pointer"><i class="fa-solid fa-reply"></i></button>
-            <button class="hover:text-black cursor-pointer"><i class="fa-regular fa-face-smile"></i></button></div>`}
+                        `<button class="absolute -top-2 -left-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+        <div class="menu absolute left-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>`}
 
-               <div class="my-1">${filesHTML}</div>
-
-                ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl
-                 ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}">
-               ${m.message}</span>` : ""}
-
-                <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
-            </div>`;
+        ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
+    
+      <!-- Time -->
+      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+ 
+    </div>`;
                 box.appendChild(div);
+
             });
 
             box.scrollTop = box.scrollHeight;
+
         }
 
         async function updateUsers() {
@@ -905,18 +909,26 @@
             div.className = "text-right";
 
             div.innerHTML = `
-        <div class="inline-block max-w-[70%]">
-            ${m.message ? `
-                <span class="px-3 py-2 inline-block right bg-blue-500 text-white">
-                    ${m.message}
-                </span>
-            ` : ""}
-            ${filesHTML}
-            <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">
-            ${Msago(m.created_at)}
-            </p>
-        </div>
-    `;
+    <div class="group relative inline-block max-w-[70%]">
+
+    <!-- Files -->
+      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
+
+      <!-- Three dots -->
+      <button class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+
+      <!-- Menu -->
+      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        
+        <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
+        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
+           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
+    
+      <!-- Time -->
+      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+ 
+    </div>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
