@@ -720,7 +720,8 @@
         }
 
         async function unsendMessage(id) {
-            const res = await fetch(`/message/unSend${id}`, {
+            console.log(id);
+            const res = await fetch(`/message/unSend?messid=${id}`, {
                 method: "DELETE",
             });
 
@@ -820,7 +821,7 @@
 
       ${isMe ? `
       <!-- Three dots -->
-      <button class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
 
       <!-- Menu -->
       <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
@@ -829,7 +830,7 @@
         <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
         <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>` :
 
-                        `<button class="absolute -top-2 -left-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+                        `<button class="absolute -top-2 cursor-pointer -left-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
         <div class="menu absolute left-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
         <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
         <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>`}
@@ -915,7 +916,7 @@
       ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
 
       <!-- Three dots -->
-      <button class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
 
       <!-- Menu -->
       <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
