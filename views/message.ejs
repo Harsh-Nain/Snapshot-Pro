@@ -509,7 +509,6 @@
         }
 
         function appendIncomingMessage(data) {
-
             let filesHTML = "";
 
             if (Array.isArray(data.files)) {
@@ -544,16 +543,9 @@
 
             div.innerHTML = `
     <div class="group relative inline-block max-w-[70%]">
-
-    <!-- Files -->
       ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
-
-        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
-           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
-    
-      <!-- Time -->
-      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
- 
+        ${data.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${data.message}</span>` : ""}
+          <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">${Msago(data.created_at)}</p>
     </div>`;
 
             box.appendChild(div);
@@ -666,8 +658,7 @@
 
             renderOwnMessage(result.data);
             showww.innerHTML = "";
-
-            socket.emit("message", {
+            socket.emit("sendMessage", {
                 to: Id.value,
                 message: result.data.message || '',
                 files: result.data.files || '',
@@ -720,7 +711,7 @@
         }
 
         async function unsendMessage(id) {
-            console.log(id);
+
             const res = await fetch(`/message/unSend?messid=${id}`, {
                 method: "DELETE",
             });
@@ -728,7 +719,6 @@
             const result = await res.json();
 
             if (result.success) {
-                console.log('oko');
                 const messageEl = document.querySelector(`[data-id="${id}"]`);
                 if (messageEl) {
                     messageEl.style.transition = "opacity 0.3s";
@@ -942,7 +932,7 @@
 
             socket.on("connect", () => console.log("Connected:", socket.id));
 
-            socket.on("message", (data) => {
+            socket.on("recieveMessage", (data) => {
                 appendIncomingMessage(data)
             });
 

@@ -72,11 +72,11 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("message", (data) => {
-        // console.log(data, ids[data.to]);
+    socket.on("sendMessage", (data) => {
+        console.log(data, ids[data.to]);
 
         if (ids[data.to]) {
-            io.to(ids[data.to]).emit("message", data);
+            io.to(ids[data.to]).emit("recieveMessage", data);
         }
     });
 
