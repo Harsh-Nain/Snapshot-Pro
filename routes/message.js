@@ -4,7 +4,7 @@ import { users } from "../db/schems.js";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { islogin } from "../middleware/islogin.js"
-import { Message, SaveMessage, ShowMessage, addMessUSR } from "../controllers/message.controllers.js"
+import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend } from "../controllers/message.controllers.js"
 import { RequestUser, SuggsionId } from "../config/funstions.js"
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
@@ -30,10 +30,11 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
+
 router.get('/message', islogin, async (req, res) => {
     const { Id } = req.user;
     const { toMessId } = req.query;
-    if (toMessId) await addMessUSR(toMessId, Id);
+    if (toMessId) await addNewUSR(toMessId, Id);
 
     const [user] = await db.select({ image_src: users.image_src, Username: users.Username }).from(users).where(eq(users.Id, Id))
 
@@ -53,5 +54,6 @@ router.get('/userlist', islogin, async (req, res) => {
 
 router.post('/saveMessage', upload.array("files", 10), islogin, SaveMessage)
 router.post('/showMessage', islogin, ShowMessage)
+router.delete('/unSend', islogin, UnSend);
 
 export default router

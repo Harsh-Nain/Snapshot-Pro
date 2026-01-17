@@ -25,11 +25,11 @@
     }
 
     .left {
-        border-radius: 10px 10px 10px 0;
+        border-radius: 20px 20px 20px 0;
     }
 
     .right {
-        border-radius: 10px 10px 0 10px;
+        border-radius: 20px 20px 0 20px;
     }
 
     .messageBox {
@@ -606,8 +606,7 @@
             </div>
 
             <div class="flex flex-col items-end text-xs text-zinc-500">
-                <span class="msg-time"
-                      data-time="${mess.created_at}">
+                <span class="msg-time" data-time="${mess.created_at}">
                       ${ago(mess.created_at)}
                 </span>
             </div>`;
@@ -722,6 +721,43 @@
             return [];
         }
 
+        function toggleMenu(e) {
+            e.stopPropagation();
+
+            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+
+            const menu = e.currentTarget.nextElementSibling;
+            menu.classList.toggle("hidden");
+            document.querySelectorAll(".menu").forEach(m => m.classList.remove("hidden"));
+        }
+
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+        });
+
+        async function unsendMessage(id) {
+            const res = await fetch(`/message/unSend${id}`, {
+                method: "DELETE",
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                console.log('oko');
+                const messageEl = document.querySelector(`[data-id="${id}"]`);
+                if (messageEl) {
+                    messageEl.style.transition = "opacity 0.3s";
+                    messageEl.style.opacity = "0";
+                    setTimeout(() => messageEl.remove(), 300);
+                }
+            }
+        }
+
+
+        function copyMessage(text) {
+            navigator.clipboard.writeText(text);
+        }
+
         async function showMessage(id) {
             box.innerHTML = ''
 
@@ -730,6 +766,7 @@
             });
 
             let result = await response.json();
+
             if (!result.success) return;
 
             box.innerHTML = "";
@@ -764,25 +801,43 @@
             `;
                         }
                     });
-
                 }
+
                 let div = document.createElement("div");
-                div.className = isMe ? "text-right" : "text-left";
+                div.className = isMe ? "text-right message" : "text-left message";
+                div.dataset.id = m._id
 
                 div.innerHTML = `
-                <div class="inline-block max-w-[70%]">
-                    <div class="my-1">${filesHTML}</div>
+               <div class="group relative inline-block max-w-[70%]">
 
-                        ${m.message ? `
-                    <span class="px-3 py-2 inline-block rounded-2xl
-                        ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}">
-                        ${m.message}
-                    </span>` : ""}
+              ${isMe ? `
+                    <div class="absolute bottom-[45%] left-[-59px] pt-2 px-1 group-hover:flex items-center gap-2 text-gray-500">
 
-                    <p class="msg-time text-gray-500 text-xs" data-time="${m.created_at}">
-                    ${Msago(m.created_at)}
-                    </p>
-                </div>`;
+                     <div class="relative">
+                    <button onclick="toggleMenu(event)" class="hover:text-black cursor-pointer"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+
+                    <div class="menu absolute right-5 bg-white rounded-xl shadow-lg text-sm min-w-[140px] z-50">
+                    <button onclick="unsendMessage('${m._id}')" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 rounded-t-xl">Unsend</button>
+                    <button onclick="copyMessage('${m.message || ""}')"class="w-full text-left px-4 py-2 hover:bg-gray-100">Copy</button>
+                    <div class="px-4 py-2 text-gray-500 text-center text-xs border-t">
+                    ${new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+              </div>
+            </div>
+
+            <button class="hover:text-black cursor-pointer"><i class="fa-solid fa-reply"></i></button>
+            <button class="hover:text-black cursor-pointer"><i class="fa-regular fa-face-smile"></i></button></div>` : `<div class="absolute bottom-[45%] pt-2 px-1 right-[-40px] hidden group-hover:flex items-center gap-2 text-gray-500">
+            <button class="hover:text-black cursor-pointer"><i class="fa-solid fa-reply"></i></button>
+            <button class="hover:text-black cursor-pointer"><i class="fa-regular fa-face-smile"></i></button></div>`}
+
+               <div class="my-1">${filesHTML}</div>
+
+                ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl
+                 ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}">
+               ${m.message}</span>` : ""}
+
+                <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+            </div>`;
                 box.appendChild(div);
             });
 
@@ -901,7 +956,6 @@
         keyss.forEach(keys => {
             keys.addEventListener('keydown', (e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
-                    console.log('ok');
                     e.preventDefault();
                     sendMessage();
                 }

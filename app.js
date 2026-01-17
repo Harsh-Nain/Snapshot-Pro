@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
 import { Server } from "socket.io";
+import { connectDB } from "./mongodb/mdb.js";
 
 import authRouter from "./routes/auth.js";
 import postRoute from "./routes/post.js";
@@ -35,6 +36,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+(async () => {
+    const db = await connectDB();
+    console.log("Collections:", await db.listCollections().toArray());
+})();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));
@@ -68,7 +74,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("message", (data) => {
-        console.log(data, ids[data.to]);
+        // console.log(data, ids[data.to]);
 
         if (ids[data.to]) {
             io.to(ids[data.to]).emit("message", data);
