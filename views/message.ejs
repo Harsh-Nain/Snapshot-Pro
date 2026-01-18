@@ -779,7 +779,7 @@
                         }
                         else if (file.type === "audio") {
                             filesHTML += `
-                <audio controls class="bg-[#f3f3f3] ${isMe ? "right" : "left"}">
+                <audio controls class="bg-[#f3f3f3] max-w-[220px] md:w-full ${isMe ? "right" : "left"}">
                     <source src="${file.url}">
                 </audio>
             `;
@@ -807,7 +807,7 @@
     <div class="group relative inline-block max-w-[70%]">
 
     <!-- Files -->
-      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
+      ${filesHTML ? `${filesHTML}` : ""}
 
       ${isMe ? `
       <!-- Three dots -->
@@ -880,7 +880,7 @@
                     }
                     else if (file.type === "audio") {
                         filesHTML += `
-                    <audio controls class="mt-2">
+                    <audio controls class="mt-2 max-w-[220px] md:w-full">
                         <source src="${file.url}">
                     </audio>
                 `;
