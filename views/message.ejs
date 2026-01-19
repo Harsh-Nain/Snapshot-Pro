@@ -556,7 +556,7 @@
 
         ${data.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-[#f3f3f3] text-black left"> ${data.message}</span>` : ""}
     
-        <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(data.created_at)}</p> 
+        <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">${Msago(data.created_at)}</p> 
     </div>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
