@@ -13,23 +13,30 @@ const router = express.Router()
 const storage = new CloudinaryStorage({
     cloudinary,
     params: async (req, file) => {
-        let folder = "posts/images";
-        let resource_type = "image";
+        let folder = "posts/others";
 
-        if (file.mimetype.startsWith("audio")) {
-            folder = "posts/audio";
-            resource_type = "video";
-        }
+        if (file.mimetype.startsWith("image")) folder = "posts/images";
+        else if (file.mimetype.startsWith("video")) folder = "posts/videos";
+        else if (file.mimetype.startsWith("audio")) folder = "posts/audio";
+        else folder = "posts/documents";
+        const cleanFileName = file.originalname
+            .replace(/\.[^/.]+$/, "")
+            .replace(/[^\w\-]+/g, "_");
 
         return {
             folder,
-            resource_type,
-            public_id: `${Date.now()}-${file.originalname.split(".")[0]}`
+            resource_type: "auto",
+            public_id: `${Date.now()}-${cleanFileName}`,
         };
-    }
+    },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: 100 * 1024 * 1024,
+    },
+});
 
 router.get('/message', islogin, async (req, res) => {
     const { Id } = req.user;

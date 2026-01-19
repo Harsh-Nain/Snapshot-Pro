@@ -510,10 +510,11 @@
 
         function appendIncomingMessage(data) {
             let filesHTML = "";
+            let cope = null
 
             if (Array.isArray(data.files)) {
                 data.files.forEach(file => {
-
+                    cope = file.url
                     if (file.type === "image") {
                         filesHTML += `
                     <img src="${file.url}"
@@ -543,11 +544,20 @@
 
             div.innerHTML = `
     <div class="group relative inline-block max-w-[70%]">
-      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
-        ${data.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${data.message}</span>` : ""}
-          <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">${Msago(data.created_at)}</p>
-    </div>`;
 
+      ${filesHTML ? `${filesHTML}` : ""}
+      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+
+      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        <button class="absolute -top-2 cursor-pointer -left-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+        <div class="menu absolute left-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        <button onclick="copyMessage('${data.message ? `${data.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${data.created_at}">${ago(data.created_at)}</p></div>
+
+        ${data.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-[#f3f3f3] text-black left"> ${data.message}</span>` : ""}
+    
+        <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p> 
+    </div>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
@@ -642,6 +652,7 @@
             const formData = new FormData();
             formData.append("message", messageText);
             formData.append("reciverId", Id.value);
+            console.log(filesToSend);
 
             filesToSend.forEach(file => {
                 formData.append("files", file);
@@ -743,11 +754,12 @@
             menu.classList.toggle("scale-95");
         }
 
-        function copyMessage(text) {
+        function copyMessage(el, text) {
             navigator.clipboard.writeText(text);
-            document.querySelectorAll(".menu").forEach(m => {
-                m.classList.add("opacity-0", "invisible", "scale-95");
-            })
+            el.textContent = '✓ Copied';
+            setTimeout(() => {
+                el.textContent = '📋 Copy';
+            }, 1000 * 7);
         }
 
         async function showMessage(id) {
@@ -760,6 +772,7 @@
             let result = await response.json();
 
             if (!result.success) return;
+            let cope = null
 
             box.innerHTML = "";
             result.data.forEach(m => {
@@ -770,27 +783,20 @@
                 let filesHTML = "";
                 if (files.length > 0) {
                     files.forEach(file => {
+                        cope = file.url
 
                         if (file.type === "image") {
-                            filesHTML += `
-                <img src="${file.url}"
-                     class="mt-2 ${isMe ? "right" : "left"} max-w-[220px]" />
-            `;
+                            filesHTML += `<img src="${file.url}" class="mt-2 ${isMe ? "right" : "left"} max-w-[220px]" />`;
                         }
                         else if (file.type === "audio") {
-                            filesHTML += `
-                <audio controls class="bg-[#f3f3f3] max-w-[220px] md:w-full ${isMe ? "right" : "left"}">
-                    <source src="${file.url}">
-                </audio>
-            `;
+                            filesHTML += `<audio controls class="bg-[#f3f3f3] max-w-[220px] ${isMe ? "right" : "left"}"><source src="${file.url}"></audio>`;
                         }
                         else {
-                            filesHTML += `
-                <a href="${file.url}" target="_blank"
-                   class="block mt-2 text-blue-600 underline">
-                    📄 Download file
-                </a>
-            `;
+                            const downloadUrl = file.url
+                                .replace("/image/upload/", "/raw/upload/")
+                                .replace("/raw/upload/", "/raw/upload/fl_attachment/");
+
+                            filesHTML += `<a href="${downloadUrl}" download="${file.name}" class="block mt-2 text-blue-600 underline">📄 Download ${file.name}</a>`;
                         }
                     });
                 }
@@ -804,39 +810,24 @@
                 });
 
                 div.innerHTML = `
-    <div class="group relative inline-block max-w-[70%]">
+                <div class="group relative inline-block max-w-[70%]">
 
-    <!-- Files -->
-      ${filesHTML ? `${filesHTML}` : ""}
+                  ${filesHTML ? `${filesHTML}` : ""}
 
-      ${isMe ? `
-      <!-- Three dots -->
-      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+                  <div class="absolute -bottom-2 w-30 cursor-pointer ${isMe ? "-left-30" : "-right-30"} overflow-hidden rounded-xl flex flex-col bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150">
+                        ${isMe ? `<button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>` : ""}     
+                        <button onclick="copyMessage(this,'${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
+                        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p>
+                   </div>
 
-      <!-- Menu -->
-      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
-        
-        <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
-        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
-        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>` :
-
-                        `<button class="absolute -top-2 cursor-pointer -left-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
-        <div class="menu absolute left-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
-        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
-        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>`}
-
-        ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
+                    ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
     
-      <!-- Time -->
-      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
- 
-    </div>`;
+                    <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p> 
+                </div>`;
                 box.appendChild(div);
-
             });
 
             box.scrollTop = box.scrollHeight;
-
         }
 
         async function updateUsers() {
@@ -869,29 +860,20 @@
 
         function renderOwnMessage(m) {
             let filesHTML = "";
+            let cope = null
 
             if (Array.isArray(m.files)) {
                 m.files.forEach(file => {
+                    cope = file.url
                     if (file.type === "image") {
-                        filesHTML += `
-                    <img src="${file.url}"
-                         class="mt-2 right max-w-[220px]" />
-                `;
+                        filesHTML += `<img src="${file.url}" class="mt-2 right max-w-[220px]" />`;
                     }
                     else if (file.type === "audio") {
-                        filesHTML += `
-                    <audio controls class="mt-2 max-w-[220px] md:w-full">
-                        <source src="${file.url}">
-                    </audio>
-                `;
+                        filesHTML += `<audio controls class="mt-2 max-w-[220px]"><source src="${file.url}"></audio>`;
                     }
                     else {
                         filesHTML += `
-                    <a href="${file.url}" target="_blank"
-                       class="block mt-2 text-white underline">
-                        📄 ${file.name || "Download file"}
-                    </a>
-                `;
+                    <a href="${file.url}" target="_blank" class="block mt-2 text-white underline">📄 ${file.name || "Download file"}</a>`;
                     }
                 });
             }
@@ -902,19 +884,17 @@
             div.innerHTML = `
     <div class="group relative inline-block max-w-[70%]">
 
-    <!-- Files -->
-      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
+      ${filesHTML ? `${filesHTML}` : ""}
 
-      <!-- Three dots -->
-      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
-
-      <!-- Menu -->
-      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
-        
         <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
-        <button onclick="copyMessage(\`${m.message ?? ""}\`)" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
-        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
-           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
+        <button onclick="copyMessage('${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
+        ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
+        <div class="absolute -bottom-2 w-30 cursor-pointer ${isMe ? "-left-30" : "-right-30"} overflow-hidden rounded-xl flex flex-col bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150">
+            <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>  
+            <button onclick="copyMessage(this,'${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
+            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p>
+            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+        </div>
     
       <!-- Time -->
       <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
