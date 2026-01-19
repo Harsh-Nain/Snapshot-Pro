@@ -758,8 +758,9 @@
             navigator.clipboard.writeText(text);
             el.textContent = '✓ Copied';
             setTimeout(() => {
-                el.textContent = '📋 Copy';
-            }, 1000 * 7);
+                 el.textContent = '✓ Copied';
+            }, 1000);
+
         }
 
         async function showMessage(id) {
@@ -818,7 +819,7 @@
                         ${isMe ? `<button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>` : ""}     
                         <button onclick="copyMessage(this,'${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
                         <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p>
-                   </div>
+                    </div>
 
                     ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
     
@@ -884,17 +885,19 @@
             div.innerHTML = `
     <div class="group relative inline-block max-w-[70%]">
 
-      ${filesHTML ? `${filesHTML}` : ""}
+    <!-- Files -->
+      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
 
+      <!-- Three dots -->
+      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
+
+      <!-- Menu -->
+      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
+        
         <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
         <button onclick="copyMessage('${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
-        ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
-        <div class="absolute -bottom-2 w-30 cursor-pointer ${isMe ? "-left-30" : "-right-30"} overflow-hidden rounded-xl flex flex-col bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150">
-            <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>  
-            <button onclick="copyMessage(this,'${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
-            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p>
-            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p>
-        </div>
+        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
+           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
     
       <!-- Time -->
       <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
