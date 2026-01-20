@@ -543,17 +543,15 @@
             div.className = "text-left";
 
             div.innerHTML = `
-    <div class="group relative inline-block max-w-[70%]">
-
-                  ${filesHTML ? `${filesHTML}` : ""}
-
-                  <div class="absolute -bottom-2 w-30 cursor-pointer -left-30 overflow-hidden rounded-xl flex flex-col bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150">
-                        <button onclick="copyMessage(this,'${data.message ? `${data.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
+                <div class="group relative inline-block max-w-[70%]">
+                        ${filesHTML}
+                        
+                    <div class="absolute -bottom-2 -right-32 opacity-0 group-hover:opacity-100 transition bg-white shadow-md rounded-xl">
+                        <button  onclick="copyMessage('${data.messag || cope}', this)" class="block px-4 py-2 hover:bg-gray-100 w-full text-left"> 📋 Copy</button>
                         <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${data.created_at}">${ago(data.created_at)}</p>
                     </div>
-
-                    ${data.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-[#f3f3f3] text-black left"> ${data.message}</span>` : ""}
-    
+                            
+                    ${data.message ? `<span class="px-3 py-2 inline-block break-words bg-[#f3f3f3] text-black left"> ${data.message}</span>` : ""}
                     <p class="msg-time text-gray-500 text-xs mt-1" data-time="${data.created_at}">${Msago(data.created_at)}</p> 
                 </div>`;
             box.appendChild(div);
@@ -752,7 +750,7 @@
             menu.classList.toggle("scale-95");
         }
 
-        function copyMessage(el, text) {
+        function copyMessage(text, el) {
             navigator.clipboard.writeText(text);
             el.textContent = '✓ Copied';
             setTimeout(() => {
@@ -778,51 +776,43 @@
 
                 const isMe = Number(current.value) === m.senderId;
                 const files = normalizeFiles(m.url);
-
                 let filesHTML = "";
+
                 if (files.length > 0) {
                     files.forEach(file => {
                         cope = file.url
 
                         if (file.type === "image") {
-                            filesHTML += `<img src="${file.url}" class="mt-2 ${isMe ? "right" : "left"} max-w-[220px]" />`;
+                            filesHTML += `<img src="${file.url}" data-copy="${file.url}" onclick="copyFromElement(this)" class="mt-2 cursor-pointer ${isMe ? "right" : "left"} max-w-[220px]" />`;
                         }
                         else if (file.type === "audio") {
-                            filesHTML += `<audio controls class="bg-[#f3f3f3] max-w-[220px] ${isMe ? "right" : "left"}"><source src="${file.url}"></audio>`;
+                            filesHTML += `<audio controls data-copy="${file.url}" onclick="copyFromElement(this)" class="bg-[#f3f3f3] max-w-[220px] ${isMe ? "right" : "left"}"> <source src="${file.url}"></audio>`;
                         }
                         else {
-                            const downloadUrl = file.url
-                                .replace("/image/upload/", "/raw/upload/")
-                                .replace("/raw/upload/", "/raw/upload/fl_attachment/");
-
-                            filesHTML += `<a href="${downloadUrl}" download="${file.name}" class="block mt-2 text-blue-600 underline">📄 Download ${file.name}</a>`;
+                            const downloadUrl = file.url.replace("/image/upload/", "/raw/upload/").replace("/raw/upload/", "/raw/upload/fl_attachment/");
+                            filesHTML += `<a href="${downloadUrl}" data-copy="${file.url}" onclick="copyFromElement(this)" download="${file.name}" class="block mt-2 text-blue-600 underline cursor-pointer"> 📄 Download ${file.name}</a>`;
                         }
                     });
                 }
-                let div = document.createElement("div");
+
+                const div = document.createElement("div");
                 div.className = `${isMe ? "text-right" : "text-left"} message`;
                 div.dataset.id = m.Id;
 
-                const time = new Date(m.created_at).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
-
                 div.innerHTML = `
-                <div class="group relative inline-block max-w-[70%]">
+                    <div class="group relative inline-block max-w-[70%]">
+                        ${filesHTML}
 
-                  ${filesHTML ? `${filesHTML}` : ""}
+                        <div class="absolute -bottom-2 ${isMe ? "-left-32" : "-right-32"} opacity-0 group-hover:opacity-100 transition bg-white shadow-md rounded-xl">
+                            ${isMe ? `<button onclick="unsendMessage(${m.Id})" class="block px-4 py-2 text-red-500 hover:bg-gray-100 w-full text-left">🗑 Unsend</button>` : ""}
+                            <button  onclick="copyMessage('${m.messag || cope}', this)" class="block px-4 py-2 hover:bg-gray-100 w-full text-left"> 📋 Copy</button>
+                            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p></div>
+                        </div>
 
-                  <div class="absolute -bottom-2 w-30 cursor-pointer ${isMe ? "-left-30" : "-right-30"} overflow-hidden rounded-xl flex flex-col bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150">
-                        ${isMe ? `<button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>` : ""}     
-                        <button onclick="copyMessage(this,'${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100">📋 Copy</button>
-                        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p>
-                    </div>
-
-                    ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
-    
-                    <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p> 
-                </div>`;
+                        ${m.message ? `
+                        <span class="px-3 py-2 inline-block break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
+                         <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+                    </div>`;
                 box.appendChild(div);
             });
 
@@ -881,22 +871,19 @@
             div.className = "text-right";
 
             div.innerHTML = `
-    <div class="group relative inline-block max-w-[70%]">
+                    <div class="group relative inline-block max-w-[70%]">
+                        ${filesHTML}
 
-      ${filesHTML ? `<div class="my-1">${filesHTML}</div>` : ""}
+                        <div class="absolute -bottom-2 -left-32 opacity-0 group-hover:opacity-100 transition bg-white shadow-md rounded-xl">
+                            ${isMe ? `<button onclick="unsendMessage(${m.Id})" class="block px-4 py-2 text-red-500 hover:bg-gray-100 w-full text-left">🗑 Unsend</button>` : ""}
+                            <button  onclick="copyMessage('${m.message}', this)" class="block px-4 py-2 hover:bg-gray-100 w-full text-left"> 📋 Copy</button>
+                            <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${ago(m.created_at)}</p></div>
+                        </div>
 
-      <button class="absolute -top-2 cursor-pointer -right-2 w-7 h-7 rounded-full bg-white shadow-md text-gray-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-150" onclick="toggleMenu(this)">⋮</button>
-
-      <div class="menu absolute right-10 top-3 z-50 bg-white rounded-xl shadow-xl text-sm  min-w-[150px] overflow-hidden  opacity-0 invisible scale-95  transition-all duration-107">
-        
-        <button onclick="unsendMessage(${m.Id})"class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">🗑 Unsend </button>
-        <button onclick="copyMessage('${m.message ? `${m.message}` : `${cope}`}')" class="w-full text-left px-4 py-2 hover:bg-gray-100"> 📋 Copy</button>
-        <p class="msg-time text-gray-500 text-xs mt-1 text-center" data-time="${m.created_at}">${Msago(m.created_at)}</p></div>
-           ${m.message ? `<span class="px-3 py-2 inline-block rounded-2xl break-words bg-blue-500 text-white right"> ${m.message}</span>` : ""}
-    
-      <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
- 
-    </div>`;
+                        ${m.message ? `
+                        <span class="px-3 py-2 inline-block break-words ${isMe ? "bg-blue-500 text-white right" : "bg-[#f3f3f3] text-black left"}"> ${m.message}</span>` : ""}
+                     <p class="msg-time text-gray-500 text-xs mt-1" data-time="${m.created_at}">${Msago(m.created_at)}</p>
+                    </div>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
