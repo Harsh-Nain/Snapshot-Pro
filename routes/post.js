@@ -40,7 +40,7 @@ router.get('/post', islogin, async (req, res) => {
     const { Id } = req.user
     let requestUser = await RequestUser(Id)
     let suggsionId = await SuggsionId(Id)
-    res.render('post', { requestUser, suggsionId })
+    res.json({ requestUser, suggsionId })
 })
 
 router.get("/posts", islogin, async (req, res) => {
@@ -53,12 +53,12 @@ router.post('/editPost', islogin, upload.fields([{ name: "post", maxCount: 1 }, 
     let rs = await EditPost(req, res)
     res.json(rs)
 })
-router.get('/onePost', islogin, OnePost)
+router.post('/onePost', islogin, OnePost)
 router.post('/post', islogin, upload.fields([{ name: "post", maxCount: 1 }, { name: "song", maxCount: 1 }]), postData);
 router.post('/like', islogin, postLike)
 router.post('/delete', islogin, deletePost)
 router.post('/edit', islogin, edit)
-router.get('/postcomment', islogin, postComment)
-router.post('/addcomment', islogin, addComment)
+router.post('/postcomment', islogin, postComment)
+router.post('/CreateComment', islogin, addComment)
 
 export default router

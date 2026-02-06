@@ -5,7 +5,6 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { islogin } from "../middleware/islogin.js"
 import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend } from "../controllers/message.controllers.js"
-import { RequestUser, SuggsionId } from "../config/funstions.js"
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
 const router = express.Router()
@@ -44,13 +43,7 @@ router.get('/message', islogin, async (req, res) => {
     if (toMessId) await addNewUSR(toMessId, Id);
 
     const [user] = await db.select({ image_src: users.image_src, Username: users.Username }).from(users).where(eq(users.Id, Id))
-
-    const requestUser = await RequestUser(Id);
-    const suggsionId = await SuggsionId(Id);
-
-    res.render('message', {
-        Id, suggsionId, requestUser, user
-    });
+    res.json({ success: true, redirect: "/api/message/message", user, Id });
 });
 
 router.get('/userlist', islogin, async (req, res) => {

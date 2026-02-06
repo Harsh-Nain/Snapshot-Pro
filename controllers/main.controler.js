@@ -17,7 +17,7 @@ export const dashbord = async (req, res) => {
     const suggsionId = await SuggsionId(Id);
     const postsFeed = await getPosts(req, res);
 
-    res.render("home", { post: postsFeed, data: User, userPost, requestUser, suggsionId, });
+    res.json({ post: postsFeed, data: User, userPost, requestUser, suggsionId, });
 };
 
 export const profile = async (req, res) => {
@@ -59,11 +59,11 @@ export const profile = async (req, res) => {
     const requestUser = await RequestUser(Id);
     const suggsionId = await SuggsionId(Id);
 
-    res.render("profile", { data: User, userPost: postsWithLike, following, follower, folingBfor: false, requestUser, suggsionId });
+    res.json({ data: User, userPost: postsWithLike, following, follower, requestUser, suggsionId });
 };
 
 export const logout = (req, res) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    res.redirect('/auth/login');
+    res.json({ redirect: '/api/auth/login' });
 };

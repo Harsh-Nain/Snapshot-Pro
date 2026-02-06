@@ -14,6 +14,6 @@
 //     console.log('ok');
 //     await client.connect();
 //     db = client.db("messanger");
-//     console.log("✅ MongoDB Connected");
+//     console.log("MongoDB Connected");
 //     return db;
 // };

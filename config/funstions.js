@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import { users, posts, postLikes, followRequests } from "../db/schems.js";
-import { eq, and, not, inArray, } from "drizzle-orm";
+import { eq, and, not, inArray, sql } from "drizzle-orm";
 
 export const RequestUser = async (Id) => {
     return await db

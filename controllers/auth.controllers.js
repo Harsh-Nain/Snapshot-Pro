@@ -74,14 +74,20 @@ export const UpdateUser = async (req, res) => {
         .set(updateData)
         .where(eq(users.Id, Id));
 
+    const data = await db
+        .select()
+        .from(users)
+        .where(eq(users.Id, Id))
+
     return res.json({
         success: true,
-        message: "Profile updated successfully",
+        data
     });
 };
 
 export const loginuser = async (req, res) => {
     const { username, password } = req.body;
+    console.log(username, password)
 
     const [user] = await db.select().from(users).where(or(eq(users.Username, username),
         eq(users.Email, username))).limit(1);
@@ -127,57 +133,58 @@ export const loginuser = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ success: true, redirect: "/" });
+    res.json({ success: true, redirect: "/api/dashbord" });
 };
 
 export const userpofl = async (req, res) => {
-    const { username, Id } = req.query;
-    const currentUserId = req.user.Id;
+    try {
 
-    if (currentUserId == Id) {
-        return res.redirect('/profile')
-    }
+        const { username, userId } = req.body;
 
-    const [User] = await db
-        .select()
-        .from(users)
-        .where(eq(users.Username, username))
-        .limit(1);
+        if (!username || !userId) {
+            return res.status(400).json({ message: "username or userId missing" });
+        }
 
-    const [currentUser] = await db
-        .select({
-            image_src: users.image_src,
-        })
-        .from(users)
-        .where(eq(users.Id, currentUserId))
-        .limit(1);
+        if (!req.user || !req.user.Id) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
 
-    const request = await db
-        .select({ Id: followRequests.Id })
-        .from(followRequests)
-        .where(
-            and(
-                eq(followRequests.userId, Number(Id)),
-                eq(followRequests.requestId, currentUserId)
+        const currentUserId = req.user.Id;
+
+        if (Number(currentUserId) === Number(userId)) {
+            return res.status(200).json({ redirect: "/api/profile" });
+        }
+
+        const [User] = await db.select().from(users).where(eq(users.Username, username)).limit(1);
+
+        if (!User) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const [currentUser] = await db.select({ image_src: users.image_src }).from(users).where(eq(users.Id, currentUserId)).limit(1);
+        const userPost = await db.select({ Id: posts.Id, image_url: posts.image_url, }).from(posts).where(eq(posts.userId, userId)).orderBy(desc(posts.created_at));
+        const isfollowing = await db
+            .select({ Id: followRequests.Id })
+            .from(followRequests)
+            .where(
+                and(
+                    eq(followRequests.userId, currentUserId),
+                    eq(followRequests.requestId, userId)
+                )
             )
-        )
-        .limit(1);
+            .limit(1);
 
-    const folingBfor = request.length > 0 && Number(Id) !== currentUserId;
+        const requestUser = await RequestUser(userId);
+        const follower = await Follower(userId);
+        const following = await Following(userId);
+        const suggsionId = await SuggsionId(currentUserId);
 
-    const userPost = await db
-        .select({
-            Id: posts.Id,
-            image_url: posts.image_url,
-        })
-        .from(posts)
-        .where(eq(posts.userId, Id))
-        .orderBy(desc(posts.created_at));
-
-    const requestUser = await RequestUser(Id);
-    const follower = await Follower(Id);
-    const following = await Following(Id);
-    const suggsionId = await SuggsionId(currentUserId);
-
-    res.render("otherUser", { data: User, userPost, currentUser, suggsionId, following, follower, folingBfor, requestUser });
+        return res.status(200).json({ data: User, userPost, currentUser, suggsionId, following, follower, isfollowing: isfollowing.length > 0, requestUser });
+    } catch (error) {
+        console.error("userProfile error:", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
 };

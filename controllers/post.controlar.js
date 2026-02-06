@@ -1,14 +1,14 @@
 import { db } from "../db/index.js";
-import { RequestUser, SuggsionId } from "../config/funstions.js";
 import { users, posts, postLikes, postComments, } from "../db/schems.js";
 import { eq, and, desc, } from "drizzle-orm";
 
-
 export const postData = async (req, res) => {
+    console.log('posting........');
+
     let { postname, discription, isPublic } = req.body;
     const { Id } = req.user;
 
-    isPublic = isPublic === undefined ? true : false;
+    isPublic = isPublic === undefined ? false : true;
     const image = req.files.post[0];
 
     const audio = req.files.song ? req.files.song[0] : null;
@@ -41,10 +41,7 @@ export const edit = async (req, res) => {
         .where(eq(posts.Id, id))
         .limit(1);
 
-    const requestUser = await RequestUser(req.user.Id);
-    const suggsionId = await SuggsionId(req.user.Id);
-
-    res.render("edit", { editpost: post, username, requestUser, suggsionId, });
+    res.json({ post, username, });
 };
 
 export const EditPost = async (req, res) => {
@@ -68,10 +65,7 @@ export const EditPost = async (req, res) => {
         updateData.songUrl = audio.path;
     }
 
-    await db
-        .update(posts)
-        .set(updateData)
-        .where(eq(posts.Id, id));
+    await db.update(posts).set(updateData).where(eq(posts.Id, id));
 
     res.json({ success: true, redirect: "/profile" });
 };
@@ -136,7 +130,7 @@ export const postLike = async (req, res) => {
 };
 
 export const postComment = async (req, res) => {
-    const { postId } = req.query;
+    const { postId } = req.body;
 
     const comments = await db
         .select({
@@ -157,12 +151,7 @@ export const postComment = async (req, res) => {
 
 export const addComment = async (req, res) => {
     const { Comment, postId } = req.body;
-    const { Id, username } = req.user;
-
-    const [user] = await db.select({ image_src: users.image_src, })
-        .from(users)
-        .where(eq(users.Id, Id))
-        .limit(1);
+    const { Id } = req.user;
 
     await db.insert(postComments).values({
         userId: Id,
@@ -170,11 +159,26 @@ export const addComment = async (req, res) => {
         content: Comment,
     });
 
-    res.json({ success: true, username, Comment, image_src: user.image_src });
+    const [comment] = await db
+        .select({
+            Id: postComments.Id,
+            content: postComments.content,
+            created_at: postComments.created_at,
+            userId: postComments.userId,
+            username: users.Username,
+            image_src: users.image_src,
+        })
+        .from(postComments)
+        .innerJoin(users, eq(users.Id, postComments.userId))
+        .where(eq(postComments.postId, postId))
+        .orderBy(desc(postComments.Id))
+        .limit(1);
+
+    res.json({ success: true, comment });
 };
 
 export const OnePost = async (req, res) => {
-    const { postId } = req.query;
+    const { postId } = req.body;
     const userId = req.user.Id;
 
     const [post] = await db
@@ -182,7 +186,7 @@ export const OnePost = async (req, res) => {
             Id: posts.Id,
             image_url: posts.image_url,
             desc: posts.desc,
-            Likes: posts.Likes,
+            totalLikes: posts.Likes,
             created_at: posts.created_at,
             username: users.Username,
             image_src: users.image_src,
@@ -227,7 +231,7 @@ export const getPosts = async (req, res) => {
             image_url: posts.image_url,
             songUrl: posts.songUrl,
             desc: posts.desc,
-            Likes: posts.Likes,
+            totalLikes: posts.Likes,
             username: users.Username,
             image_src: users.image_src,
             userId: users.Id,

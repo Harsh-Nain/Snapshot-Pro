@@ -1,6 +1,7 @@
 import { db } from "../db/index.js";
 import { followRequests, users } from "../db/schems.js";
 import { eq, and } from "drizzle-orm";
+import { SuggsionId, Following, Follower } from "../config/funstions.js"
 
 export const Follow = async (req, res) => {
     const { requestId } = req.body;
@@ -103,3 +104,17 @@ export const Remove = async (req, res) => {
 
     return res.json({ success: true });
 };
+
+export const GetFoloData = async (req, res) => {
+    const { Id, which } = req.body
+    let data
+    if (which == "following") {
+        data = await Following(Id)
+    } else if (which == "followers") {
+        data = await Follower(Id)
+    }
+
+    let suggession = await SuggsionId(req.user.Id)
+
+    res.json({ Success: true, data, suggession })
+}

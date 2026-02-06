@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import { messages, users } from "../db/schems.js";
-import { eq, or, and, asc, sql } from "drizzle-orm";
+import { eq, or, and, desc, asc, sql } from "drizzle-orm";
 
 export const Message = async (Id) => {
     const userId = Number(Id);
@@ -54,7 +54,7 @@ export const Message = async (Id) => {
             users,
             eq(users.Id, sql`lm.otherUserId`)
         )
-        .orderBy(asc(messages.created_at));
+        .orderBy(desc(messages.created_at));
 
     return data;
 };
@@ -113,7 +113,12 @@ export const ShowMessage = async (req, res) => {
             asc(messages.Id)
         );
 
-    res.json({ success: true, data });
+    const updatedData = data.map(msg => ({
+        ...msg,
+        fromMe: msg.senderId === Id
+    }));
+
+    res.json({ success: true, data: updatedData });
 };
 
 export const addNewUSR = async (toMessId, Id) => {
@@ -165,7 +170,6 @@ export const UnSend = async (req, res) => {
 
     res.json({ success: true });
 };
-
 
 
 

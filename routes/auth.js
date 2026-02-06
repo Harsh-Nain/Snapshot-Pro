@@ -17,20 +17,19 @@ const storage = new CloudinaryStorage({
     },
 });
 
-
 const upload = multer({ storage });
 
 router.post('/login', loginuser)
 router.post('/signup', saveuser)
 router.post('/updateUser', upload.single("image"), islogin, UpdateUser)
-router.get('/userProfile', islogin, userpofl)
+router.post('/userProfile', islogin, userpofl)
 
 router.get('/login', (req, res) => {
-    res.render('login')
+    res.json({ success: true })
 })
 
 router.get('/register', (req, res) => {
-    res.render('signup')
+    res.json({ success: true })
 })
 
 export default router
