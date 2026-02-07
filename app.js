@@ -43,19 +43,14 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://snapshot-frontend.onrender.com",
+    "https://snapshot-frontend.onrender.com"
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("CORS not allowed"));
-        }
-    },
-    credentials: true,
+    origin: allowedOrigins,
+    credentials: true
 }));
+
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -102,5 +97,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`server start at http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
