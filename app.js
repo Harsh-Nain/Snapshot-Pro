@@ -3,7 +3,6 @@ dotenv.config();
 
 import express from "express";
 import cookieParser from "cookie-parser";
-app.use(cookieParser());
 import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
@@ -40,6 +39,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 5000;
 
+app.use(cookieParser());
 app.set("trust proxy", 1);
 app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
