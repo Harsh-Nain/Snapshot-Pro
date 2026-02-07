@@ -47,10 +47,22 @@ const allowedOrigins = [
     "https://snapshot-frontend.onrender.com"
 ];
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://snapshot-frontend.onrender.com");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
+
 app.use(cors({
     origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true
 }));
 
 app.use(express.json());
@@ -59,13 +71,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));
 app.set("view engine", "ejs");
 
-app.use("/api/auth", authRouter);
+app.get("/", islogin, dashbord);
+app.get("/api/profile", islogin, profile);
 app.use("/api/post", islogin, postRoute);
 app.use("/api/follow", islogin, followRoute);
 app.use("/api/message", islogin, messageRouter);
-app.get("/api/profile", islogin, profile);
+app.use("/api/auth", authRouter);
 app.get("/api/logout", islogin, logout);
-app.get("/", islogin, dashbord);
 
 io.on("connection", (socket) => {
     const userId = socket.handshake.auth.userId;
