@@ -32,7 +32,7 @@ export const saveuser = async (req, res) => {
 
     res.json({
         success: true,
-        redirect: "/auth/login",
+        redirect: "/api/auth/login",
     });
 
 };
@@ -119,12 +119,12 @@ export const loginuser = async (req, res) => {
         { expiresIn: "7d" }
     );
 
-    res.cookie("accessToken", accessToken, {
+    res.cookie("accessToken", newAccess, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 15 * 60 * 1000,
     });
+
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
