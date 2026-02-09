@@ -3,7 +3,7 @@ import { RequestUser, SuggsionId, Following, Follower } from "../config/funstion
 import { getPosts } from "../controllers/post.controlar.js"
 import { users, posts, postLikes } from "../db/schems.js";
 
-import { eq, or, inArray, desc, and } from "drizzle-orm";
+import { eq, or, inArray, desc, and ,like} from "drizzle-orm";
 
 export const dashbord = async (req, res) => {
     const { username, Id } = req.user;
@@ -22,6 +22,7 @@ export const dashbord = async (req, res) => {
 
 export const searchUser = async (req, res) => {
     try {
+        console.log('okkook')
         const q = req.query.q;
 
         if (!q || q.trim().length < 2) {

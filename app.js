@@ -61,7 +61,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));
 
 app.get("/", islogin, dashbord);
-app.get("/search", islogin, searchUser);
+app.get("/search", searchUser);
 
 app.get("/api/profile", islogin, profile);
 
