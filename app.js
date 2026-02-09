@@ -43,27 +43,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 app.set("trust proxy", 1);
 app.use(express.urlencoded({ extended: true }));
-
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://snapshot-fruntend.vercel.app"
+    "https://snapshot-frontend.onrender.com",
+    "https://snapshot-fruntend.vercel.app/"
+
 ];
-
-app.set("trust proxy", 1);
-
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin) return callback(null, true); 
-
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("CORS blocked: " + origin));
-        }
-    },
-    credentials: true
-}));
-
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://snapshot-frontend.onrender.com");
@@ -77,6 +62,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
 
 app.use(express.json());
 
