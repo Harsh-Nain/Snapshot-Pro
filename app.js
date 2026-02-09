@@ -16,72 +16,50 @@ import messageRouter from "./routes/message.js";
 import { dashbord, profile, logout } from "./controllers/main.controler.js";
 import { islogin } from "./middleware/islogin.js";
 
-/* =========================
-   APP + SERVER
-========================= */
 const app = express();
 const server = http.createServer(app);
 
-/* =========================
-   ALLOWED ORIGINS
-========================= */
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://snapshot-frontend.onrender.com",
-  "https://snapshot-fruntend.vercel.app"
+    "http://localhost:5173",
+    "https://snapshot-fruntend.vercel.app"
 ];
 
-/* =========================
-   SOCKET.IO
-========================= */
 const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true
-  }
+    cors: {
+        origin: allowedOrigins,
+        credentials: true
+    }
 });
 export { io };
 
 let ids = {};
 
-/* =========================
-   BASIC MIDDLEWARE
-========================= */
 app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/* =========================
-   CORS (ONLY ONE PLACE)
-========================= */
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Postman / server calls
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, origin);
-    }
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, origin);
+        }
 
-    return callback(new Error("CORS blocked: " + origin));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+        return callback(new Error("CORS blocked: " + origin));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-/* =========================
-   STATIC FILES
-========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));
 
-/* =========================
-   ROUTES
-========================= */
 app.get("/", islogin, dashbord);
 app.get("/api/profile", islogin, profile);
 
@@ -92,33 +70,27 @@ app.use("/api/auth", authRouter);
 
 app.get("/api/logout", islogin, logout);
 
-/* =========================
-   SOCKET EVENTS
-========================= */
 io.on("connection", (socket) => {
-  const userId = socket.handshake.auth.userId;
-  if (!userId) return;
+    const userId = socket.handshake.auth.userId;
+    if (!userId) return;
 
-  ids[userId] = socket.id;
-  io.emit("online:list", { onlineUsers: Object.keys(ids) });
-
-  socket.on("sendMessage", (data) => {
-    const to = String(data.to);
-    if (ids[to]) {
-      io.to(ids[to]).emit("recieveMessage", data);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    delete ids[userId];
+    ids[userId] = socket.id;
     io.emit("online:list", { onlineUsers: Object.keys(ids) });
-  });
+
+    socket.on("sendMessage", (data) => {
+        const to = String(data.to);
+        if (ids[to]) {
+            io.to(ids[to]).emit("recieveMessage", data);
+        }
+    });
+
+    socket.on("disconnect", () => {
+        delete ids[userId];
+        io.emit("online:list", { onlineUsers: Object.keys(ids) });
+    });
 });
 
-/* =========================
-   START SERVER
-========================= */
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
