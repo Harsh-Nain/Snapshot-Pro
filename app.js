@@ -13,7 +13,7 @@ import authRouter from "./routes/auth.js";
 import postRoute from "./routes/post.js";
 import followRoute from "./routes/follow.js";
 import messageRouter from "./routes/message.js";
-import { dashbord, profile, logout } from "./controllers/main.controler.js";
+import { dashbord, profile, logout, searchUser } from "./controllers/main.controler.js";
 import { islogin } from "./middleware/islogin.js";
 
 const app = express();
@@ -61,6 +61,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("public/uploads"));
 
 app.get("/", islogin, dashbord);
+app.get("/search", islogin, searchUser);
+
 app.get("/api/profile", islogin, profile);
 
 app.use("/api/post", islogin, postRoute);

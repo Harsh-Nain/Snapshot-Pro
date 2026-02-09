@@ -20,6 +20,37 @@ export const dashbord = async (req, res) => {
     res.json({ post: postsFeed, data: User, userPost, requestUser, suggsionId, });
 };
 
+export const searchUser = async (req, res) => {
+    try {
+        const q = req.query.q;
+
+        if (!q || q.trim().length < 2) {
+            return res.json([]);
+        }
+
+        const result = await db
+            .select({
+                Id: users.Id,
+                Username: users.Username,
+                First_name: users.First_name,
+                image_src: users.image_src
+            })
+            .from(users)
+            .where(
+                or(
+                    like(users.Username, `%${q}%`),
+                    like(users.First_name, `%${q}%`)
+                )
+            )
+            .limit(10);
+
+        res.json(result);
+    } catch (err) {
+        console.error("Search error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 export const profile = async (req, res) => {
     const { username, Id } = req.user;
 
