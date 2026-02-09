@@ -27,6 +27,7 @@ const io = new Server(server, {
         origin: [
             "http://localhost:5173",
             "https://snapshot-frontend.onrender.com",
+            "https://snapshot-fruntend.vercel.app/"
         ],
         credentials: true,
     },
@@ -58,7 +59,6 @@ app.use((req, res, next) => {
     }
     next();
 });
-
 
 app.use(cors({
     origin: allowedOrigins,
