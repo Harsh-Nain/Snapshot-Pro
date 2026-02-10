@@ -52,6 +52,8 @@ router.get('/userlist', islogin, async (req, res) => {
     res.json({ message });
 });
 
+router.get("/loadmess", islogin, ShowMessage);
+
 router.post('/saveMessage', upload.array("files", 10), islogin, SaveMessage)
 router.post('/showMessage', islogin, ShowMessage)
 router.delete('/unSend', islogin, UnSend);

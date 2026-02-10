@@ -86,6 +86,23 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("deleteMess", (data) => {
+        const to = String(data.to);
+        if (ids[to]) {
+            io.to(ids[to]).emit("deletedrecive", data);
+        }
+    });
+
+    socket.on("typing", (data) => {
+        const to = String(data.to)
+
+        if (ids[to]) {
+            io.to(ids[to]).emit("typing", {
+                from: userId,
+            });
+        }
+    });
+
     socket.on("disconnect", () => {
         delete ids[userId];
         io.emit("online:list", { onlineUsers: Object.keys(ids) });

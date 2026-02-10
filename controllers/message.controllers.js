@@ -89,38 +89,6 @@ export const SaveMessage = async (req, res) => {
     });
 };
 
-export const ShowMessage = async (req, res) => {
-    const { Id } = req.user;
-    const otherUserId = Number(req.query.Id);
-
-    const data = await db
-        .select()
-        .from(messages)
-        .where(
-            or(
-                and(
-                    eq(messages.senderId, Id),
-                    eq(messages.receiverId, otherUserId)
-                ),
-                and(
-                    eq(messages.senderId, otherUserId),
-                    eq(messages.receiverId, Id)
-                )
-            )
-        )
-        .orderBy(
-            asc(messages.created_at),
-            asc(messages.Id)
-        );
-
-    const updatedData = data.map(msg => ({
-        ...msg,
-        fromMe: msg.senderId === Id
-    }));
-
-    res.json({ success: true, data: updatedData });
-};
-
 export const addNewUSR = async (toMessId, Id) => {
     const receiverId = Number(toMessId);
     const senderId = Number(Id);
@@ -170,6 +138,61 @@ export const UnSend = async (req, res) => {
 
     res.json({ success: true });
 };
+
+export const ShowMessage = async (req, res) => {
+
+    const limit = 7;
+    const page = Number(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const { Id } = req.user;
+    const otherUserId = Number(req.query.Id);
+
+    if (!otherUserId) {
+        return res.status(400).json({
+            success: false,
+            message: "Other user Id is required",
+        });
+    }
+
+    const data = await db
+        .select()
+        .from(messages)
+        .where(
+            or(
+                and(
+                    eq(messages.senderId, Id),
+                    eq(messages.receiverId, otherUserId)
+                ),
+                and(
+                    eq(messages.senderId, otherUserId),
+                    eq(messages.receiverId, Id)
+                )
+            )
+        )
+        .orderBy(
+            desc(messages.created_at),
+            desc(messages.Id)
+        )
+        .limit(limit)
+        .offset(offset);
+
+    const updatedData = data.reverse().map(msg => ({
+        ...msg,
+        fromMe: msg.senderId === Id,
+    }));
+
+    res.json({
+        success: true,
+        data: updatedData,
+        page,
+        hasMore: data.length === limit,
+    });
+
+
+};
+
+
 
 
 
