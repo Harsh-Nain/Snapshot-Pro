@@ -233,6 +233,7 @@ export const getPosts = async (req, res) => {
             desc: posts.desc,
             totalLikes: posts.Likes,
             username: users.Username,
+            postName: posts.postName,
             image_src: users.image_src,
             userId: users.Id,
         })
