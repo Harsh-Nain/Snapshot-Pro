@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import { users, posts, postLikes, postComments, } from "../db/schems.js";
-import { eq, and, desc, } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 
 export const postData = async (req, res) => {
     console.log('posting........');
@@ -236,16 +236,19 @@ export const getPosts = async (req, res) => {
             postName: posts.postName,
             image_src: users.image_src,
             userId: users.Id,
+            commentCount: count(postComments.Id),
         })
         .from(posts)
         .innerJoin(users, eq(posts.userId, users.Id))
+        .leftJoin(postComments, eq(postComments.postId, posts.Id))
         .where(eq(posts.isPublic, false))
+        .groupBy(posts.Id, users.Id)
         .orderBy(desc(posts.created_at))
         .limit(limit)
         .offset(offset);
 
     if (postsData.length === 0) {
-        return [];
+        return res.json([]);
     }
 
     const likedPosts = await db
@@ -257,8 +260,9 @@ export const getPosts = async (req, res) => {
 
     const result = postsData.map(post => ({
         ...post,
+        commentCount: Number(post.commentCount),
         isLike: likedPostIds.has(post.Id),
     }));
 
-    return result;
-}
+    return result
+};
