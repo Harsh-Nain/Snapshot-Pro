@@ -225,7 +225,8 @@ export const DeleteChat = async (req, res) => {
 };
 
 export const DeleteUser = async (req, res) => {
-    const userId = Number(req.params.id);
+    console.log('okokokokosendeddddd');
+    const userId = Number(req.query.id);
 
     if (!userId) {
         return res.status(400).json({
