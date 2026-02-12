@@ -224,35 +224,36 @@ export const DeleteChat = async (req, res) => {
     });
 };
 
-export const DeleteUser = async (req, res) => {
-    console.log('okokokokosendeddddd');
-    const userId = Number(req.query.id);
+export const DeleteUserChat = async (req, res) => {
+    const currentUserId = req.user.id; // from auth middleware
+    const otherUserId = Number(req.query.id);
 
-    if (!userId) {
+    if (!otherUserId) {
         return res.status(400).json({
             success: false,
             message: "User Id is required",
         });
     }
 
-    await db
-        .delete(messages)
-        .where(
-            or(
-                eq(messages.senderId, userId),
-                eq(messages.receiverId, userId)
+    await db.delete(messages).where(
+        or(
+            and(
+                eq(messages.senderId, currentUserId),
+                eq(messages.receiverId, otherUserId)
+            ),
+            and(
+                eq(messages.senderId, otherUserId),
+                eq(messages.receiverId, currentUserId)
             )
-        );
+        )
+    );
 
-    await db
-        .delete(users)
-        .where(eq(users.Id, userId));
-
-    res.json({
+    return res.json({
         success: true,
-        message: "User and all related messages deleted successfully",
+        message: "Chat deleted successfully",
     });
 };
+
 
 
 
