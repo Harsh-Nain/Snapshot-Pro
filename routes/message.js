@@ -4,7 +4,7 @@ import { users } from "../db/schems.js";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { islogin } from "../middleware/islogin.js"
-import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend } from "../controllers/message.controllers.js"
+import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend, DeleteChat, DeleteUser } from "../controllers/message.controllers.js"
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
 const router = express.Router()
