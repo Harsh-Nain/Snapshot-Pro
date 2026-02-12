@@ -56,6 +56,8 @@ router.get("/loadmess", islogin, ShowMessage);
 
 router.post('/saveMessage', upload.array("files", 10), islogin, SaveMessage)
 router.post('/showMessage', islogin, ShowMessage)
+router.post('/clearchat', islogin, DeleteChat)
+router.post('/clearuser', islogin, DeleteUser)
 router.delete('/unSend', islogin, UnSend);
 
 export default router

@@ -192,6 +192,66 @@ export const ShowMessage = async (req, res) => {
 
 };
 
+export const DeleteChat = async (req, res) => {
+    const { Id } = req.user;
+    const otherUserId = Number(req.query.Id);
+
+    if (!otherUserId) {
+        return res.status(400).json({
+            success: false,
+            message: "Other user Id is required",
+        });
+    }
+
+    await db
+        .delete(messages)
+        .where(
+            or(
+                and(
+                    eq(messages.senderId, Id),
+                    eq(messages.receiverId, otherUserId)
+                ),
+                and(
+                    eq(messages.senderId, otherUserId),
+                    eq(messages.receiverId, Id)
+                )
+            )
+        );
+
+    res.json({
+        success: true,
+        message: "Chat deleted successfully",
+    });
+};
+
+export const DeleteUser = async (req, res) => {
+    const userId = Number(req.params.id);
+
+    if (!userId) {
+        return res.status(400).json({
+            success: false,
+            message: "User Id is required",
+        });
+    }
+
+    await db
+        .delete(messages)
+        .where(
+            or(
+                eq(messages.senderId, userId),
+                eq(messages.receiverId, userId)
+            )
+        );
+
+    await db
+        .delete(users)
+        .where(eq(users.Id, userId));
+
+    res.json({
+        success: true,
+        message: "User and all related messages deleted successfully",
+    });
+};
 
 
 
