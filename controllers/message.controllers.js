@@ -225,7 +225,7 @@ export const DeleteChat = async (req, res) => {
 };
 
 export const DeleteUserChat = async (req, res) => {
-    const currentUserId = req.user.id; // from auth middleware
+    const currentUserId = req.user.Id; 
     const otherUserId = Number(req.query.id);
 
     if (!otherUserId) {
