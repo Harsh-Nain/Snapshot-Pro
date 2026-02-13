@@ -139,7 +139,6 @@ export const loginuser = async (req, res) => {
 
 export const userpofl = async (req, res) => {
     try {
-
         const { username, userId } = req.body;
 
         if (!username || !userId) {
@@ -149,7 +148,6 @@ export const userpofl = async (req, res) => {
         if (!req.user || !req.user.Id) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-
         const currentUserId = req.user.Id;
 
         if (Number(currentUserId) === Number(userId)) {
@@ -165,10 +163,10 @@ export const userpofl = async (req, res) => {
         const [currentUser] = await db.select({ image_src: users.image_src }).from(users).where(eq(users.Id, currentUserId)).limit(1);
         const userPost = await db.select({ Id: posts.Id, image_url: posts.image_url, }).from(posts).where(eq(posts.userId, userId)).orderBy(desc(posts.created_at));
         const isfollowing = await db
-            .select({ Id: followRequests.Id })
+            .select()
             .from(followRequests)
             .where(
-                and(
+                or(
                     eq(followRequests.userId, currentUserId),
                     eq(followRequests.requestId, userId)
                 )
