@@ -53,7 +53,6 @@ export const searchUser = async (req, res) => {
 
 export const profile = async (req, res) => {
     const { username, Id } = req.user;
-    console.log('okokokok');
 
     const [User] = await db.select().from(users).where(or(eq(users.Username, username),
         eq(users.Email, username))).orderBy(desc(users.Id)).limit(1);

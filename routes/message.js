@@ -4,7 +4,7 @@ import { users } from "../db/schems.js";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { islogin } from "../middleware/islogin.js"
-import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend, DeleteChat, DeleteUserChat } from "../controllers/message.controllers.js"
+import { Message, SaveMessage, ShowMessage, addNewUSR, UnSend, DeleteUserChat } from "../controllers/message.controllers.js"
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloud.js";
 const router = express.Router()
@@ -56,8 +56,7 @@ router.get("/loadmess", islogin, ShowMessage);
 
 router.post('/saveMessage', upload.array("files", 10), islogin, SaveMessage)
 router.post('/showMessage', islogin, ShowMessage)
-router.get('/clearchat', islogin, DeleteChat)
-router.get('/clearuser', islogin, DeleteUserChat)
+router.get('/clearchat', islogin, DeleteUserChat)
 router.delete('/unSend', islogin, UnSend);
 
 export default router

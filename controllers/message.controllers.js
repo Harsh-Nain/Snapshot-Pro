@@ -90,6 +90,7 @@ export const SaveMessage = async (req, res) => {
 };
 
 export const addNewUSR = async (toMessId, Id) => {
+    console.log("add message");
     const receiverId = Number(toMessId);
     const senderId = Number(Id);
 
@@ -192,41 +193,10 @@ export const ShowMessage = async (req, res) => {
 
 };
 
-export const DeleteChat = async (req, res) => {
-    const { Id } = req.user;
-    const otherUserId = Number(req.query.Id);
-
-    if (!otherUserId) {
-        return res.status(400).json({
-            success: false,
-            message: "Other user Id is required",
-        });
-    }
-
-    await db
-        .delete(messages)
-        .where(
-            or(
-                and(
-                    eq(messages.senderId, Id),
-                    eq(messages.receiverId, otherUserId)
-                ),
-                and(
-                    eq(messages.senderId, otherUserId),
-                    eq(messages.receiverId, Id)
-                )
-            )
-        );
-
-    res.json({
-        success: true,
-        message: "Chat deleted successfully",
-    });
-};
-
 export const DeleteUserChat = async (req, res) => {
-    const currentUserId = req.user.Id; 
+    const currentUserId = req.user.Id;
     const otherUserId = Number(req.query.id);
+    console.log(currentUserId, req.query.id)
 
     if (!otherUserId) {
         return res.status(400).json({
