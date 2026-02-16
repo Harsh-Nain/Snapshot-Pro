@@ -39,7 +39,8 @@ export const SuggsionId = async (Id) => {
                 not(eq(users.Id, Id)),
                 not(inArray(users.Id, subQuery))
             )
-        );
+        )
+        .limit(7);
 };
 
 export const Follower = async (Id) => {
