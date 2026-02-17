@@ -11,7 +11,7 @@ export const islogin = (req, res, next) => {
   jwt.verify(accessToken, "iuytrewqdsf", (err, user) => {
     if (!err && user) {
       req.user = user;
-      console.log('ok');
+      console.log('ok', user);
       return next();
     }
 

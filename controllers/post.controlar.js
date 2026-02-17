@@ -45,8 +45,9 @@ export const edit = async (req, res) => {
 };
 
 export const EditPost = async (req, res) => {
+
     let { id, postname, discription, isPublic } = req.body;
-    isPublic = isPublic === undefined ? true : false;
+    isPublic = isPublic === undefined ? false : true;
 
     const updateData = {
         postName: postname,
