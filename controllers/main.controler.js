@@ -97,5 +97,5 @@ export const profile = async (req, res) => {
 export const logout = (req, res) => {
     res.cookie('accessToken', '');
     res.cookie('refreshToken', '');
-    res.json({ redirect: '/api/auth/login' });
+    res.json({ redirect: '/auth/login' });
 };

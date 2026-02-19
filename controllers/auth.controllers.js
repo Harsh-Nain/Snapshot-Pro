@@ -32,7 +32,7 @@ export const saveuser = async (req, res) => {
 
     res.json({
         success: true,
-        redirect: "/api/auth/login",
+        redirect: "/auth/login",
     });
 
 };
@@ -134,7 +134,7 @@ export const loginuser = async (req, res) => {
     });
 
 
-    res.json({ success: true, redirect: "/api/dashbord" });
+    res.json({ success: true, redirect: "/" });
 };
 
 export const userpofl = async (req, res) => {
@@ -151,7 +151,7 @@ export const userpofl = async (req, res) => {
         const currentUserId = req.user.Id;
 
         if (Number(currentUserId) === Number(userId)) {
-            return res.status(200).json({ redirect: "/api/profile" });
+            return res.status(200).json({ redirect: "/profile" });
         }
 
         const [User] = await db.select().from(users).where(eq(users.Username, username)).limit(1);
