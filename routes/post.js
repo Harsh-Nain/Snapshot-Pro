@@ -23,6 +23,10 @@ const storage = new CloudinaryStorage({
             folder = "posts/audio";
             resource_type = "video";
         }
+        else if (file.mimetype.startsWith("video/")) {
+            folder = "posts/video";
+            resource_type = "video";
+        }
         else {
             folder = "posts/documents";
             resource_type = "raw";
