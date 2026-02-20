@@ -14,17 +14,20 @@ const storage = new CloudinaryStorage({
     params: async (req, file) => {
         let folder;
         let resource_type;
+        console.log('okkokookkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+        console.log(file.mimetype)
 
         if (file.mimetype.startsWith("image/")) {
             folder = "posts/images";
             resource_type = "image";
         }
-        else if (file.mimetype.startsWith("audio/")) {
-            folder = "posts/audio";
+        else if (file.mimetype.startsWith("video/")) {
+            folder = "posts/videos";
             resource_type = "video";
         }
-        else if (file.mimetype.startsWith("video/")) {
-            folder = "posts/video";
+
+        else if (file.mimetype.startsWith("audio/")) {
+            folder = "posts/audio";
             resource_type = "video";
         }
         else {
