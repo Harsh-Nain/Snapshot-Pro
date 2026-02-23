@@ -48,25 +48,17 @@ export const EditPost = async (req, res) => {
 
     let { id, postname, discription, isPublic } = req.body;
     isPublic = isPublic === undefined ? false : true;
+    console.log("Body data", req.body);
 
-    const updateData = {
-        postName: postname,
-        desc: discription,
-        isPublic,
-        created_at: new Date(),
-    };
+    const updateData = { postName: postname, desc: discription, isPublic, created_at: new Date(), };
 
-    if (req.files?.post?.length) {
-        updateData.image_url = req.files.post[0].path;
-    }
+    if (req.files?.post?.length) { updateData.image_url = req.files.post[0].path; }
 
     const audio = req.files.song ? req.files.song[0] : null;
 
-    if (audio) {
-        updateData.songUrl = audio.path;
-    }
+    if (audio) { updateData.songUrl = audio.path; }
 
-    await db.update(posts).set(updateData).where(eq(posts.Id, id));
+    await db.update(posts).set(updateData).where(eq(posts.Id, Number(id)));
 
     res.json({ success: true, redirect: "/profile" });
 };
