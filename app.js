@@ -32,7 +32,7 @@ const io = new Server(server, {
 });
 export { io };
 
-let ids = new Map();
+let ids = {};
 
 app.set("trust proxy", 1);
 app.use(cookieParser());
@@ -77,9 +77,7 @@ io.on("connection", (socket) => {
     if (!userId) return;
 
     ids[userId] = socket.id;
-    onlineUsers.set(userId, socket.id);
-
-    io.emit("oonline:lists", Array.from(onlineUsers.keys()));
+    io.emit("online:list", { onlineUsers: Object.keys(ids) });
 
     socket.on("sendMessage", (data) => {
         const to = String(data.to);
