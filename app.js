@@ -69,6 +69,9 @@ app.use("/api/post", islogin, postRoute);
 app.use("/api/follow", islogin, followRoute);
 app.use("/api/message", islogin, messageRouter);
 app.use("/api/auth", authRouter);
+app.get("/run", (req, res) => {
+    res.status(200).json({ success: true })
+});
 
 app.get("/api/logout", islogin, logout);
 
